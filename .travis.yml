@@ -1,0 +1,16 @@
+# Please refer to https://docs.travis-ci.com/user/languages/python/ for additional information.
+language: python
+python:
+- "3.8"
+
+# Configure Environment
+env:
+- DJANGO_VERSION=3.1.2
+
+# Install Required Dependencies
+install:
+- pip install -r requirements.txt
+
+# run test scripts
+script:
+- python manage.py test 
