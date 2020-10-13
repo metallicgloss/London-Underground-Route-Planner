@@ -1,4 +1,8 @@
-# Tubeline - Name Check
+# Manual Data Review
+
+### First Pass Time Taken (Inc Documentation): 39 Minutes
+
+## Tubeline - Name Check
 - Bakerloo - Passed
 - Central - Passed
 - Circle - Failed
@@ -13,7 +17,7 @@
 - Victoria - Passed
 - Waterloo & City - Passed
 
-# Start & End Station Check
+## Start & End Station Check
 - Bakerloo - Passed - Harrow & Wealdstone - Elephant & Castle
 - Central - Passed - Epping - West Ruislip
 - Circle - Passed - Edgware Road - Hammersmith
@@ -26,7 +30,7 @@
 - Victoria - Passed - Walthamstow Central - Brixton
 - Waterloo & City - Passed - Bank - Waterloo
 
-# Missing / Duplicate Data Check
+## Missing / Duplicate Data Check
 - Bakerloo - Passed
     - 25 Stations, 24 Routes Provided
 - Central - Failed
@@ -36,8 +40,11 @@
     - 35 Stations, 35 Routes Provided
         - Fail disregarded, assume as valid. Additional route provided as tube line re-visits Paddington.
 - District - Passed
+    - 60 Stations, 59 Routes Provided
 - Hammersmith & City - Passed
+    - 29 Stations, 28 Routes Provided
 - Jubilee - Passed
+    - 27 Stations, 26 Routes Provided
 - Metropolitan - Failed
     - 34 Stations, 36 Routes Provided
         - Harrow-on-the-Hill -> Wembley Park - Duplicate Route To Wembley Park - To Be Removed
@@ -51,12 +58,14 @@
     - 53 Stations, 53 Routes Provided
         - Hammersmith -> Acton Town - Duplicate Route To Action Down - To Be Removed
 - Victoria - Passed
+    - 16 Stations, 15 Routes Provided
 - Waterloo & City - Passed
+    - 2 Stations, 1 Route Provided
 
-# Data Integrity Check
+## Data Integrity Check
 - Bakerloo - Passed
 - Central - Failed
-    - 3 Incorrect Routes
+    - 4 Incorrect Routes
         - Snaresbrook -> Leytonstone - Should be: Snaresbrook -> Roding Valley
         - Roding Valley	-> Chigwell - Should be: Woodford -> Chigwell
         - North Acton -> West Acton - Should be: Hanger Lane -> West Acton
@@ -71,7 +80,7 @@
 - Hammersmith & City - Passed
 - Jubilee - Passed
 - Metropolitan - Failed
-    - 2 Incorrect Routes
+    - 4 Incorrect Routes
         - Amersham -> Chalfont & Latimer - Should be: Amersham -> Chesham
         - Rickmansworth -> Moor Park - Should be: Rickmansworth -> Watford
         - Croxley -> Moor Park - Should be: Croxley -> Uxbridge
@@ -87,7 +96,7 @@
 - Victoria - Passed
 - Waterloo & City - Passed
 
-# Station Name Validation Check
+## Station Name Validation Check
 - Bakerloo - Passed
 - Central - Passed
 - Circle - Passed
@@ -100,17 +109,18 @@
 - Victoria - Passed
 - Waterloo & City - Passed
 
-# Extreme Value Check
+## Extreme Value Check
 - Bakerloo - Passed
 - Central - Passed
 - Circle - Passed
-- District - Needs Manual Review - High Values
+- District - Passed
 - Hammersmith & City - Passed
 - Jubilee - Passed
-- Metropolitan - Passed
+- Metropolitan - Failed
+    - 2 Routes Pending Review
+        - Moor Park -> Harrow-on-the-Hill - 14 minutes.
+        - Harrow-on-the-Hill -> Finchley Road - Disregard, route to be removed.
 - Northern - Passed
 - Piccadilly - Passed
 - Victoria - Passed
 - Waterloo & City - Passed
-
-First Pass Time Taken (Inc Documentation): 39 Minutes
