@@ -2,6 +2,13 @@ import xlrd
 import array
 import re
 
+"""
+Paddington -> Royal Oak Missing Route was not picked up as the train line was not present
+
+
+Data Integrity check cant be done by program without giving it the full map
+
+"""
 
 workbook = xlrd.open_workbook("London Underground data.xlsx")
 data_sheet = workbook.sheet_by_index(0)
@@ -37,7 +44,7 @@ def get_row_information_from_excel(row_number):
     return_data = []
     for data in [train_line, location_a, location_b]:
         if data != "":
-            data = data.upper()
+            data = data.upper().strip()
         else:
             data = None
         return_data.append(data)
@@ -63,7 +70,7 @@ def get_sanitised_sub_set_dictionary(dict_key, parent_dictionary, row_number):
     if dict_key not in parent_dictionary.keys():
         parent_dictionary[dict_key] = {}
         if check_for_illegal_characters_present(dict_key):
-            log_records.append("Illegal characters found in the text '" + dict_key + "' on row " + str(row_number))
+            log_records.append("Illegal characters found in the text '" + dict_key + "' on row " + str(row_number + 1))
     return parent_dictionary
 
 def get_train_information_from_excel():
@@ -72,21 +79,21 @@ def get_train_information_from_excel():
     for row_number in range(LAST_ROW_NUMBER - 1):
         train_line, starting_point, next_point, time = get_row_information_from_excel(row_number)
         
-        if check_value_is_not_none(value=train_line, log_message="Train line not provided on row " + str(row_number)):
+        if check_value_is_not_none(value=train_line, log_message="Train line not provided on row " + str(row_number + 1)):
             train_information = get_sanitised_sub_set_dictionary(train_line, train_information, row_number)
         
-            if check_value_is_not_none(value=starting_point, log_message="Start location not provided on row " + str(row_number)):
+            if check_value_is_not_none(value=starting_point, log_message="Start location not provided on row " + str(row_number + 1)):
                 train_information[train_line] = get_sanitised_sub_set_dictionary(starting_point, train_information[train_line], row_number)
                 
                 if next_point is not None:
                     if time is None:
-                        log_records.append("Missing time on row " + str(row_number))
+                        log_records.append("Missing time on row " + str(row_number + 1))
                     else:
                         all_time_values.append(time)
                         if next_point not in train_information[train_line][starting_point].keys():
                             train_information[train_line][starting_point][next_point] = [time]
                             if check_for_illegal_characters_present(next_point):
-                                log_records.append("Illegal characters found in the text '" + next_point + "' on row " + str(row_number))
+                                log_records.append("Illegal characters found in the text '" + next_point + "' on row " + str(row_number + 1))
                         else:
                             train_information[train_line][starting_point][next_point].append(time)
 
@@ -98,8 +105,11 @@ def check_for_duplicates_and_extreme_values():
         if train_information[train_line][last_stop] != {}:
             log_records.append("End node not detected for train line " + train_line)
         for train_stop in train_information[train_line]:
+            # Check for multiple end stops
+            if len(train_information[train_line][train_stop]) != 0 and len(train_information[train_line][train_stop]) != 1:
+                log_records.append("Multiple destinations detected for " + train_stop + " stop using the " + train_line + " train line")
             for next_stop in train_information[train_line][train_stop]:
-                # Check for duplicate values
+                # Check for duplicate time values from train stop to next stop
                 if len(train_information[train_line][train_stop][next_stop]) > 1:
                     log_records.append("Multiple times provided from " + train_stop + " to " + next_stop + " using the " + train_line + " train line: [" + ",".join(str(train_information[train_line][train_stop][next_stop])) + "]")
                 # Check for extreme values
@@ -112,4 +122,4 @@ def check_for_duplicates_and_extreme_values():
 if __name__ == "__main__":
     get_train_information_from_excel()
     check_for_duplicates_and_extreme_values()
-    for record in log_records: print(record)
+    for record in log_records: print(record.title())
