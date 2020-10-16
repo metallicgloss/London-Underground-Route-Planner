@@ -13,10 +13,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '0_l)yv6%hl4dzcdu%@q35-+sjs2$ckee^b9wz2omqv#1i5a$lg'
 
@@ -24,6 +20,8 @@ SECRET_KEY = '0_l)yv6%hl4dzcdu%@q35-+sjs2$ckee^b9wz2omqv#1i5a$lg'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+STATIC_ROOT = '/static/'
 
 
 # Application definition
@@ -52,7 +50,7 @@ ROOT_URLCONF = 'tfl_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        "DIRS": ["personal_portfolio/templates/"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
