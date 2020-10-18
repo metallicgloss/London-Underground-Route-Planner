@@ -1,5 +1,5 @@
 """
-WSGI config for TFL_Project project.
+WSGI config for tfl_project project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -8,9 +8,8 @@ https://docs.djangoproject.com/en/3.1/howto/deployment/wsgi/
 """
 
 import os
-
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'TFL_Project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tfl_project.settings')
 
 application = get_wsgi_application()

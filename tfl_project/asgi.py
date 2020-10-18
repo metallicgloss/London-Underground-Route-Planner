@@ -1,5 +1,5 @@
 """
-ASGI config for TFL_Project project.
+ASGI config for tfl_project project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'TFL_Project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tfl_project.settings')
 
 application = get_asgi_application()
