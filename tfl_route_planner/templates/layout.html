@@ -1,8 +1,9 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    {% load static %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -14,6 +15,75 @@
         rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="shortcut icon" href="{% static 'imgs/favicon.ico' %}" />
+    <style>
+        #timeline-container {
+            margin-right: -25px;
+            margin-left: -25px;
+            margin-bottom: 5px;
+        }
+
+        .timeline {
+            position: relative;
+            width: 100%;
+            margin-top: 16px;
+        }
+
+        .timeline-item {
+            color: rgb(0, 25, 168);
+            text-align: left;
+            font-size: 14px;
+            padding: 1rem 1.5rem 1rem 1.5rem;
+            border-left: 4px solid rgb(0, 25, 168);
+            border-bottom: 1px solid rgb(0, 25, 168);
+            position: relative;
+            list-style-type: none;
+            --item-width: calc(100%);
+        }
+
+        .timeline-item::after {
+            position: absolute;
+            right: calc(var(--item-width) + 40px);
+            top: 16px;
+            float: right;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .timeline-item::before {
+            content: "";
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            background-color: rgb(0, 25, 168);
+            position: absolute;
+            left: -10px;
+            top: 21px;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        @media only screen and (max-width: 800px) {
+            .timeline .timeline-item {
+                font-size: 1.1rem;
+            }
+
+            .timeline .timeline-item::after {
+                right: calc(var(--item-width) + 30px);
+            }
+        }
+
+        @media only screen and (max-width: 800px) {
+            .timeline-item {
+                padding: 1rem 1.5rem 1rem 0.5rem;
+            }
+
+            .timeline-item::after {
+                right: calc(var(--item-width) + 20px);
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -27,30 +97,28 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Plan Route</a>
+                        <a class="nav-link" href="/">Route Planner</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Visualise Route</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Licences</a>
+                        <a class="nav-link" href="{% url 'licences' %}">Licences</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="header-block text-center text-white">
+    <div class="header-block text-white">
         <div class="header-block-content">
             <div class="container">
-                <img src="{% static 'imgs/roundel.svg' %}" class="header-image" />
                 <h1 class="header-block-heading mb-0">TFL Underground Route Planner</h1>
                 <h2 class="header-block-subheading mb-0">Shortest Route Design</h2>
             </div>
         </div>
     </div>
 
-    {% block page_content %}{% endblock %}
+    <div class="container">
+        {% block page_content %}{% endblock %}
+    </div>
 
     <footer class="py-5 bg-black">
         <div class="container">
@@ -63,6 +131,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"
         integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf"
         crossorigin="anonymous"></script>
+    {% block page_scripts %}{% endblock %}
 </body>
 
 </html>
