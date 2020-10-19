@@ -45,9 +45,9 @@ h1, h2, h3, h4, h5, h6 {
 .header-block {
     position: relative;
     overflow: hidden;
-    padding-top: calc(7rem + 72px);
-    padding-bottom: 7rem;
-    background: rgb(134, 143, 152);
+    padding-top: calc(1rem + 72px);
+    padding-bottom: 2rem;
+    background: rgb(0, 25, 168);
     background-repeat: no-repeat;
     background-position: center center;
     background-attachment: scroll;
@@ -60,11 +60,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .header-block .header-block-content .header-block-heading {
-    font-size: 4rem;
+    font-size: 2rem;
 }
 
 .header-block .header-block-content .header-block-subheading {
-    font-size: 2rem;
+    font-size: 1rem;
 }
 
 .header-block .header-image {
@@ -98,4 +98,8 @@ h1, h2, h3, h4, h5, h6 {
     .btn-secondary:focus {
         box-shadow: 0 0 0 0.2rem rgba(255, 106, 0, 0.5);
     }
+}
+
+.form-control {
+    font-size: 0.8rem;
 }
