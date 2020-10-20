@@ -9,6 +9,19 @@
     --secondary-black: #747780;
     --primary-blue: #113B92;
     --secondary-blue: #0060a8;
+    --off-white: #EBEBEB;
+    /* Underground Colour Codes */
+    --bakerloo-line: #b26300;
+    --central-line: #DC241F;
+    --circle-line: #FFD329;
+    --district-line: #007D32;
+    --hsmith-line: #F4A9BE;
+    --jubilee-line: #A1A5A7;
+    --metropolitan-line: #9B0058;
+    --northern-line: #000;
+    --piccadilly-line: #0019A8;
+    --victoria-line: #0098D8;
+    --waterloo-line: #93CEBA;
 }
 
 @font-face {
@@ -134,7 +147,7 @@ body {
 }
 
 .homepage-selection .selection-box-large {
-    height: 500px;
+    height: 600px;
 }
 
 .homepage-selection .selection-box .selection-title {
@@ -194,9 +207,38 @@ body {
     display: none;
 }
 
+.route-selection hr {
+    color: var(--off-white);
+    margin-top: 5px;
+}
+
 .route-selection .route-plan {
     display: inline;
     width: 75%;
+}
+
+.route-selection .route-plan table {
+    margin-bottom: 0;
+}
+
+.route-selection .route-plan th {
+    border-top: none;
+    border-bottom: none;
+    color: var(--secondary-black);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 20px;
+    padding: 0px 0px 20px 0px;
+}
+
+.route-selection .route-plan td {
+    border-top: none;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 20px;
+    padding: 0px 0px 20px 0px;
 }
 
 .route-selection .route-map {
@@ -206,5 +248,86 @@ body {
 
 .route-selection .route-map #map {
     width: 100%;
-    height: 200px;
+    height: 470px;
+    border-radius: 10px;
+}
+
+.route-summary .summary-heading {
+    margin-top: -20px;
+    margin-bottom: 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--off-white);
+}
+
+.route-summary .summary-heading p {
+    display: inline-block;
+    position: relative;
+    top: 20px;
+    padding: 0 15px 0 0;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
+    color: var(--secondary-black);
+    background: #fff;
+}
+
+.route-summary ol {
+    padding-left: 20px;
+    line-height: 20px;
+}
+
+.route-summary li {
+    padding-left: 20px;
+    margin-bottom: 5px;
+}
+
+/* 
+-------------------------------------------------
+---------- Official Underground Colors ----------
+-------------------------------------------------
+*/
+
+.bakerloo {
+    color: var(--bakerloo-line);
+}
+
+.central {
+    color: var(--central-line);
+}
+
+.circle {
+    color: var(--circle-line);
+}
+
+.district {
+    color: var(--district-line);
+}
+
+.hsmith {
+    color: var(--hsmith-line);
+}
+
+.jubilee {
+    color: var(--jubilee-line);
+}
+
+.metropolitan {
+    color: var(--metropolitan-line);
+}
+
+.northern {
+    color: var(--northern-line);
+}
+
+.piccadilly {
+    color: var(--piccadilly-line);
+}
+
+.victoria {
+    color: var(--victoria-line);
+}
+
+.waterloo {
+    color: var(--waterloo-line);
 }
