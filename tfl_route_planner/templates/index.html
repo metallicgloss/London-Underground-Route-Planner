@@ -39,48 +39,69 @@
             <div class="route-selection">
                 <hr>
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-7">
                         <div class="route-plan">
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">First</th>
-                                        <th scope="col">Last</th>
-                                        <th scope="col">Handle</th>
+                                        <th scope="col">Station</th>
+                                        <th scope="col">Line</th>
+                                        <th scope="col">Total Travel Time</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <th scope="row">1</th>
-                                        <td>Mark</td>
-                                        <td>Otto</td>
-                                        <td>@mdo</td>
+                                        <td>Station One</td>
+                                        <td class="bakerloo">Bakerloo</td>
+                                        <td>2 mins</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">2</th>
-                                        <td>Jacob</td>
-                                        <td>Thornton</td>
-                                        <td>@fat</td>
+                                        <td>Station Two</td>
+                                        <td class="metropolitan">Metropolitan</td>
+                                        <td>5 mins <small>(+3 mins)</small></td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">3</th>
-                                        <td>Larry</td>
-                                        <td>the Bird</td>
-                                        <td>@twitter</td>
+                                        <td>Station Three</td>
+                                        <td class="district">District</td>
+                                        <td>8 mins <small>(+3 mins)</small></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Station Four</td>
+                                        <td class="district">District</td>
+                                        <td>12 mins <small>(+4 mins)</small></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Station Five</td>
+                                        <td>-</td>
+                                        <td>14 mins <small>(+2 mins)</small></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+                        <div class="route-summary">
+                            <div class="summary-heading">
+                                <p>Journey Summary</p>
+                            </div>
+                            <ol>
+                                <li>Station One to Station Two (<span class="bakerloo">Bakerloo Line</span>)</li>
+                                <li>Change at Station Two from the <span class="bakerloo">Bakerloo Line</span> to the
+                                    <span class="metropolitan">Metropolitan Line</span></li>
+                                <li>Station Two to Station Three (<span class="metropolitan">Metropolitan Line</span>)
+                                </li>
+                                <li>Change at Station Three from the <span class="metropolitan">Metropolitan Line</span>
+                                    to
+                                    the <span class="district">District Line</span></li>
+                                <li>Station Three to Station Five (<span class="district">District Line</span>)</li>
+                                <li>You've arrived at your destination.</li>
+                            </ol>
+                            <p><strong>Total Travel Time:</strong> 14 Minutes</p>
+                        </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-5">
                         <div class="route-map">
                             <div id="map"></div>
                         </div>
                     </div>
-                </div>
-                <div class="route-summary">
-
                 </div>
             </div>
         </div>
@@ -101,8 +122,8 @@
 
     function initMap() {
         map = new google.maps.Map(document.getElementById("map"), {
-            center: { lat: -34.397, lng: 150.644 },
-            zoom: 8,
+            center: { lat: 51.5074, lng: 0.2278 },
+            zoom: 11,
         });
     }
 </script>
