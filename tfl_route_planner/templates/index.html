@@ -1,47 +1,90 @@
 {% extends "layout.html" %}
+{% load static %}
 
 {% block page_content %}
-
-<div class="container">
-
-
-    <div class="row">
-        <div class="col-md-9" style="
-    padding: 0;
-">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Map_of_USA_with_state_names.svg/959px-Map_of_USA_with_state_names.svg.png"
-                width="100%" style="margin-top: 50px;">
+<div class="header-block">
+    <div class="header-block-content">
+        <div class="container">
+            <h1 class="header-block-heading mb-0">London Underground Planner</h1>
+            <h2 class="header-block-subheading mb-0">Find the shortest path for your requested root.</h2>
         </div>
-        <div class="col-md-3"
-            style="border: 1px solid #d8d8d8;margin-top: 50px;padding: 25px;margin-bottom: 74px;padding-bottom: 0px;/* border-right: 4px solid #000; */">
-            <form style="/* margin-top: 50px; */" _lpchecked="1">
-                <div class="row">
-                    <input type="text" class="form-control" placeholder="Origin"
-                        style="margin-bottom: 10px; width: 100%;">
-                    <input type="text" class="form-control" placeholder="Destination"
-                        style="margin-bottom: 10px;width:100%">
-                    <input type="text" class="form-control" placeholder="Start Time"
-                        style="margin-bottom: 10px;width:100%">
-                    <button type="submit" class="btn btn-secondary"
-                        style="width:100%;font-size: 12px;background-color:rgb(0,25,168);border-color:rgb(0,25,168);">Search</button>
+    </div>
+</div>
+
+<div class="homepage-selection">
+    <div class="container">
+        <img src="{% static 'imgs/homepage-graphic.svg' %}" />
+        <div class="selection-box">
+            <div class="row">
+                <div class="col-lg-3">
+                    <p class="selection-title">From</p>
+                    <input type="text" name="origin-location" id="origin-location" placeholder="Origin Location" />
                 </div>
-            </form>
-            <div id="timeline-container">
-                <ul class="timeline"
-                    style="padding-left:10px;overflow-y:scroll;max-height: 310px;margin-bottom: -5px;margin-right: -25px;">
-                    <li class="timeline-item" data-date="22 Jan 2020">Bakerloo - Waterloo</li>
-                    <li class="timeline-item" data-date="3 Feb 2020">Bakerloo -Gateway</li>
-                    <li class="timeline-item" data-date="14 Feb 2020">Bakerloo -Example</li>
-                    <li class="timeline-item" data-date="17 Feb 2020">Metropolitan - Cutty Sark</li>
-                    <li class="timeline-item" data-date="22 Jan 2020">Bakerloo - Waterloo</li>
-                    <li class="timeline-item" data-date="3 Feb 2020">Bakerloo -Gateway</li>
-                    <li class="timeline-item" data-date="14 Feb 2020">Bakerloo -Example</li>
-                    <li class="timeline-item" data-date="17 Feb 2020">Metropolitan - Cutty Sark</li>
-                </ul>
+                <div class="col-lg-3">
+                    <p class="selection-title">To</p>
+                    <input type="text" name="destination-location" id="destination-location"
+                        placeholder="Destination Location" />
+                </div>
+                <div class="col-lg-2">
+                    <p class="selection-title">At</p>
+                    <input type="time" name="start-time" id="start-time" />
+                </div>
+                <div class="col-lg-2">
+                    <img src="{% static 'imgs/train-graphic.svg' %}" id="train-graphic" />
+                </div>
+                <div class="col-lg-2 selection-button">
+                    <button id="selection-submit-button" onclick="expand()">Search</button>
+                </div>
+            </div>
+            <div class="route-selection">
+                <hr>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="route-plan">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">First</th>
+                                        <th scope="col">Last</th>
+                                        <th scope="col">Handle</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>Mark</td>
+                                        <td>Otto</td>
+                                        <td>@mdo</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">2</th>
+                                        <td>Jacob</td>
+                                        <td>Thornton</td>
+                                        <td>@fat</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">3</th>
+                                        <td>Larry</td>
+                                        <td>the Bird</td>
+                                        <td>@twitter</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="route-map">
+                            <div id="map"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="route-summary">
+
+                </div>
             </div>
         </div>
     </div>
-
 </div>
 {% endblock %}
 
@@ -50,60 +93,17 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2JJaU3ySjHvqyO7a_HGNf3-pS0dZBjo4&callback=initMap&libraries=&v=weekly"
     defer></script>
 <script>
-    function initMap() {
-        const directionsService = new google.maps.DirectionsService();
-        const directionsRenderer = new google.maps.DirectionsRenderer();
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 6,
-            center: { lat: 41.85, lng: -87.65 },
-        });
-        directionsRenderer.setMap(map);
-        document.getElementById("submit").addEventListener("click", () => {
-            calculateAndDisplayRoute(directionsService, directionsRenderer);
-        });
+    function expand() {
+        $('.selection-box').addClass('selection-box-large');
+        $('.route-selection').show();
     }
+    let map;
 
-    function calculateAndDisplayRoute(directionsService, directionsRenderer) {
-        const waypts = [];
-        const checkboxArray = document.getElementById("waypoints");
-
-        for (let i = 0; i < checkboxArray.length; i++) {
-            if (checkboxArray.options[i].selected) {
-                waypts.push({
-                    location: checkboxArray[i].value,
-                    stopover: true,
-                });
-            }
-        }
-        directionsService.route(
-            {
-                origin: document.getElementById("start").value,
-                destination: document.getElementById("end").value,
-                waypoints: waypts,
-                optimizeWaypoints: true,
-                travelMode: google.maps.TravelMode.DRIVING,
-            },
-            (response, status) => {
-                if (status === "OK") {
-                    directionsRenderer.setDirections(response);
-                    const route = response.routes[0];
-                    const summaryPanel = document.getElementById("directions-panel");
-                    summaryPanel.innerHTML = "";
-
-                    // For each route, display summary information.
-                    for (let i = 0; i < route.legs.length; i++) {
-                        const routeSegment = i + 1;
-                        summaryPanel.innerHTML +=
-                            "<b>Route Segment: " + routeSegment + "</b><br>";
-                        summaryPanel.innerHTML += route.legs[i].start_address + " to ";
-                        summaryPanel.innerHTML += route.legs[i].end_address + "<br>";
-                        summaryPanel.innerHTML += route.legs[i].distance.text + "<br><br>";
-                    }
-                } else {
-                    window.alert("Directions request failed due to " + status);
-                }
-            }
-        );
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: { lat: -34.397, lng: 150.644 },
+            zoom: 8,
+        });
     }
 </script>
 {% endblock %}

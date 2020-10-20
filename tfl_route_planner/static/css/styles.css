@@ -1,105 +1,210 @@
+/* 
+-------------------------------------------------
+-------------     Global Styles     -------------
+-------------------------------------------------
+*/
+
+:root {
+    --primary-black: #2D3039;
+    --secondary-black: #747780;
+    --primary-blue: #113B92;
+    --secondary-blue: #0060a8;
+}
+
+@font-face {
+    font-family: 'GT Haptik';
+    font-style: normal;
+    font-weight: normal;
+    src: url('/static/fonts/GT_Haptik_Regular.ttf') format("truetype");
+}
+
+@font-face {
+    font-family: 'GT Haptik';
+    font-style: normal;
+    font-weight: bold;
+    src: url('/static/fonts/GT_Haptik_Bold.ttf') format("truetype");
+}
+
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'GT Haptik';
+    max-width: 100%;
+    min-height: 100%;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 800 !important;
-}
-
-.btn-xl {
-    text-transform: uppercase;
-    padding: 1.5rem 3rem;
-    font-size: 0.9rem;
-    font-weight: 700;
-    letter-spacing: 0.1rem;
-}
-
-.bg-black {
-    background-color: #000 !important;
-}
-
-.rounded-pill {
-    border-radius: 5rem;
-}
+/* 
+-------------------------------------------------
+-------------     Navbar Styles     -------------
+-------------------------------------------------
+*/
 
 .navbar-custom {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    background-color: rgb(65, 75, 86);
+    padding-bottom: 0.8rem;
+    padding-top: 0.8rem;
 }
 
 .navbar-custom .navbar-brand {
-    text-transform: uppercase;
-    font-size: 1rem;
-    letter-spacing: 0.1rem;
-    font-weight: 700;
+    color: var(--primary-black);
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 750;
+    line-height: 45px;
+    margin-left: -25px;
+}
+
+.navbar-custom .navbar-brand:hover {
+    color: var(--secondary-black)
+}
+
+.navbar-custom .navbar-collapse {
+    margin-right: -24px;
+}
+
+.navbar-custom .navbar-nav .nav-item {
+    margin-left: 25px;
 }
 
 .navbar-custom .navbar-nav .nav-item .nav-link {
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.1rem;
+    color: var(--primary-black);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 18px;
 }
 
+/* 
+-------------------------------------------------
+-------------     Header Styles     -------------
+-------------------------------------------------
+*/
+
 .header-block {
-    position: relative;
+    margin-top: 150px;
     overflow: hidden;
-    padding-top: calc(1rem + 72px);
-    padding-bottom: 2rem;
-    background: rgb(0, 25, 168);
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-attachment: scroll;
-    background-size: cover;
+    position: relative;
 }
 
 .header-block .header-block-content {
-    z-index: 1;
     position: relative;
+    z-index: 1;
 }
 
 .header-block .header-block-content .header-block-heading {
-    font-size: 2rem;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 50px;
 }
 
 .header-block .header-block-content .header-block-subheading {
-    font-size: 1rem;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 25px;
 }
 
-.header-block .header-image {
-    width: 200px;
-    margin-bottom: 50px;
+/* 
+-------------------------------------------------
+-------------  Selection Box Styles -------------
+-------------------------------------------------
+*/
+
+.homepage-selection {
+    margin-top: -100px;
+    text-align: right;
 }
 
-@media (min-width: 992px) {
-    .bg-primary {
-        background-color: #ee0979 !important;
-    }
-    .btn-primary {
-        background-color: #ee0979;
-        border-color: #ee0979;
-    }
-    .btn-primary:active, .btn-primary:focus, .btn-primary:hover {
-        background-color: #bd0760 !important;
-        border-color: #bd0760 !important;
-    }
-    .btn-primary:focus {
-        box-shadow: 0 0 0 0.2rem rgba(238, 9, 121, 0.5);
-    }
-    .btn-secondary {
-        background-color: #ff6a00;
-        border-color: #ff6a00;
-    }
-    .btn-secondary:active, .btn-secondary:focus, .btn-secondary:hover {
-        background-color: #cc5500 !important;
-        border-color: #cc5500 !important;
-    }
-    .btn-secondary:focus {
-        box-shadow: 0 0 0 0.2rem rgba(255, 106, 0, 0.5);
-    }
+.homepage-selection svg {
+    position: relative;
+    z-index: 1;
 }
 
-.form-control {
-    font-size: 0.8rem;
+.homepage-selection .selection-box {
+    background: #FFFFFF;
+    border-radius: 20px;
+    box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.1);
+    height: 90px;
+    margin-top: -125px;
+    overflow: hidden;
+    padding: 25px;
+    position: relative;
+    text-align: left;
+    transition: all 0.3s ease-in-out;
+    width: 100%;
+    z-index: 2;
+}
+
+.homepage-selection .selection-box-large {
+    height: 500px;
+}
+
+.homepage-selection .selection-box .selection-title {
+    color: var(--secondary-black);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 20px;
+    margin-bottom: 0;
+}
+
+.homepage-selection input {
+    border: none;
+    outline: none;
+    color: var(--primary-black);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 750;
+    line-height: 20px;
+}
+
+.homepage-selection #train-graphic {
+    margin-top: -42px;
+    margin-left: 2px;
+}
+
+.homepage-selection .selection-button {
+    text-align: right;
+}
+
+.homepage-selection .selection-button #selection-submit-button {
+    background: var(--primary-blue);
+    border-radius: 10px;
+    border: 0;
+    color: #fff;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 750;
+    height: 54px;
+    line-height: 20px;
+    margin-top: -5px;
+    outline: none;
+    width: 116px;
+}
+
+.homepage-selection .selection-button #selection-submit-button:hover {
+    background: var(--secondary-blue);
+}
+
+/* 
+-------------------------------------------------
+-------------       Route Box       -------------
+-------------------------------------------------
+*/
+
+.route-selection {
+    display: none;
+}
+
+.route-selection .route-plan {
+    display: inline;
+    width: 75%;
+}
+
+.route-selection .route-map {
+    display: inline;
+    width: 25%;
+}
+
+.route-selection .route-map #map {
+    width: 100%;
+    height: 200px;
 }
