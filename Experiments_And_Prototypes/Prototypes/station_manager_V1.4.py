@@ -70,7 +70,7 @@ class StationHandler:
         self._length = 0
         # self._head.next_node = self._tail
         # self._tail.prev_node = self._head
-        self.__fisrt_letter_frequency = {}
+        self.__first_letter_frequency = {}
 
     def add_station_alphabetically(self, station_name: str) -> None:
         station_node = self.Station(station_name)
@@ -95,10 +95,12 @@ class StationHandler:
                 raise Exception("Cannot insert duplicate station name")
             else:
                 # Switch head and tail
-                self._tail = self._head
-                self._head = station_node
-                self._head.next_node = self._tail
-                self._tail.prev_node = self._head
+                # self._tail = self._head
+                # self._head = station_node
+                # self._head.next_node = self._tail
+                # self._tail.prev_node = self._head
+                self._head.next_node = self._tail = self._head
+                self._tail.prev_node = self._head = station_node
                 self._tail.next_node = None
         else:
             # search list for insertion point
@@ -128,7 +130,7 @@ class StationHandler:
             
             # Insert into double linked list
             if direction == 1:
-                if current_node.station_name == self._head.station_name:
+                if current_node.station_name == self._head.station_name and station_name < self._head.station_name:
                     # insert record before head
                     station_node.next_node = self._head
                     self._head.prev_node = station_node
@@ -141,7 +143,7 @@ class StationHandler:
                         current_node.prev_node.next_node = station_node
                         current_node.prev_node = station_node
             else:
-                if current_node.station_name == self._tail.station_name:
+                if current_node.station_name == self._tail.station_name and station_name > self._tail.station_name:
                     # insert record after tail
                     station_node.prev_node = self._tail
                     self._tail.next_node = station_node
@@ -155,10 +157,10 @@ class StationHandler:
         
         # Add first letter to first_letter_frequency
         first_letter = station_name[0]
-        if first_letter not in self.__fisrt_letter_frequency.keys():
-            self.__fisrt_letter_frequency[first_letter] = 1
+        if first_letter not in self.__first_letter_frequency.keys():
+            self.__first_letter_frequency[first_letter] = 1
         else:
-            self.__fisrt_letter_frequency[first_letter] += 1
+            self.__first_letter_frequency[first_letter] += 1
     
     def print_all_stations(self, current_node=None) -> None:
         """ Displays all the station names in order of the linked list """
@@ -196,18 +198,18 @@ class StationHandler:
         
         # Get total number of stations before target letter
         left_side_total_stations = 0
-        for letter in self.__fisrt_letter_frequency:
+        for letter in sorted(self.__first_letter_frequency):
             if first_letter > letter:
-                left_side_total_stations += self.__fisrt_letter_frequency[letter]
+                left_side_total_stations += self.__first_letter_frequency[letter]
             else: # The else statement has been added for improved efficiency
                 break
         
         # Get total number of stations after target letter
         right_side_total_stations = 0
-        if first_letter not in self.__fisrt_letter_frequency.keys():
+        if first_letter not in self.__first_letter_frequency.keys():
             right_side_total_stations = self.total_stations - left_side_total_stations
         else:
-            right_side_total_stations = self.total_stations - (left_side_total_stations + self.__fisrt_letter_frequency[first_letter])
+            right_side_total_stations = self.total_stations - (left_side_total_stations + self.__first_letter_frequency[first_letter])
         
         # Deterimine which direction to travel
         direction = 1
@@ -222,8 +224,8 @@ class StationHandler:
         """ Gets the total number of stations in the double linked list """
         # TODO Maybe a more efficient way to get total size
         total = 0
-        for letter in self.__fisrt_letter_frequency:
-            total += self.__fisrt_letter_frequency[letter]
+        for letter in self.__first_letter_frequency:
+            total += self.__first_letter_frequency[letter]
         return total
         
         
@@ -234,6 +236,7 @@ if __name__ == "__main__":
     S.add_station_alphabetically("Adnan")
     # S.add_station_alphabetically("Adnan1")
     
+    S.add_station_alphabetically("Daibion")
     S.add_station_alphabetically("Adnan1")
     S.add_station_alphabetically("01") # 3
     S.add_station_alphabetically("Cumin") # 3
@@ -244,7 +247,6 @@ if __name__ == "__main__":
     S.add_station_alphabetically("Breath")
     S.add_station_alphabetically("Brexit")
     S.add_station_alphabetically("Denmark")
-    S.add_station_alphabetically("Daibion")
     S.print_all_stations()
     # x = S.get_station_node_by_name("Breath")
     # S.print_all_stations()
