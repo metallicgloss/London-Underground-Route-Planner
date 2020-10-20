@@ -7,89 +7,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>University of Greenwich - TFL Route Planning Application</title>
+    <title>London Underground Route Planning - University of Greenwich</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700;800&display=swap"
-        rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="shortcut icon" href="{% static 'imgs/favicon.ico' %}" />
-    <style>
-        #timeline-container {
-            margin-right: -25px;
-            margin-left: -25px;
-            margin-bottom: 5px;
-        }
-
-        .timeline {
-            position: relative;
-            width: 100%;
-            margin-top: 16px;
-        }
-
-        .timeline-item {
-            color: rgb(0, 25, 168);
-            text-align: left;
-            font-size: 14px;
-            padding: 1rem 1.5rem 1rem 1.5rem;
-            border-left: 4px solid rgb(0, 25, 168);
-            border-bottom: 1px solid rgb(0, 25, 168);
-            position: relative;
-            list-style-type: none;
-            --item-width: calc(100%);
-        }
-
-        .timeline-item::after {
-            position: absolute;
-            right: calc(var(--item-width) + 40px);
-            top: 16px;
-            float: right;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-        .timeline-item::before {
-            content: "";
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            background-color: rgb(0, 25, 168);
-            position: absolute;
-            left: -10px;
-            top: 21px;
-        }
-
-        .timeline-item:last-child {
-            border-bottom: none;
-        }
-
-        @media only screen and (max-width: 800px) {
-            .timeline .timeline-item {
-                font-size: 1.1rem;
-            }
-
-            .timeline .timeline-item::after {
-                right: calc(var(--item-width) + 30px);
-            }
-        }
-
-        @media only screen and (max-width: 800px) {
-            .timeline-item {
-                padding: 1rem 1.5rem 1rem 0.5rem;
-            }
-
-            .timeline-item::after {
-                right: calc(var(--item-width) + 20px);
-            }
-        }
-    </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="#">TFL Route Planner</a>
+            <a class="navbar-brand" href="#">Route Planner</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
                 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -97,7 +26,7 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Route Planner</a>
+                        <a class="nav-link" href="/">London Underground Planner</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'licences' %}">Licences</a>
@@ -106,19 +35,8 @@
             </div>
         </div>
     </nav>
-
-    <div class="header-block text-white">
-        <div class="header-block-content">
-            <div class="container">
-                <h1 class="header-block-heading mb-0">TFL Underground Route Planner</h1>
-                <h2 class="header-block-subheading mb-0">Shortest Route Design</h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        {% block page_content %}{% endblock %}
-    </div>
+    
+    {% block page_content %}{% endblock %}
 
     <footer class="py-5 bg-black">
         <div class="container">
