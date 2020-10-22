@@ -29,13 +29,16 @@
                         <a class="nav-link" href="/">London Underground Planner</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'userguide' %}">User Guide</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'licences' %}">Licences</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-    
+
     {% block page_content %}{% endblock %}
 
     <footer class="py-5 bg-black">
