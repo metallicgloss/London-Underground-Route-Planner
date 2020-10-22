@@ -7,3 +7,6 @@ def index(request):
 
 def licences(request):
     return render(request, 'licences.html')
+
+def userguide(request):
+    return render(request, 'userguide.html')

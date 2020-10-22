@@ -283,6 +283,40 @@ body {
 }
 
 /* 
+--------------------------------------------------
+---------------- User Guide Pages ----------------
+--------------------------------------------------
+*/
+
+.main-wrapper {
+    margin-top: 150px;
+    overflow: hidden;
+    position: relative;
+    position: relative;
+    z-index: 1;
+}
+
+.user-guide-row-1 {
+    margin-top: 30px;
+}
+
+.user-guide-steps-heading {
+    padding-top: 60px;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 50px;
+}
+
+.user-guide-steps-subheading {
+    font-size: 20px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 25px;
+    padding-bottom:30px;
+}
+
+/* 
 -------------------------------------------------
 ---------- Official Underground Colors ----------
 -------------------------------------------------
