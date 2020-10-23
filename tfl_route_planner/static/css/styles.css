@@ -309,6 +309,59 @@ body {
 }
 
 /* 
+-----------------------------------------------------
+-------------    Homepage Content       -------------
+-----------------------------------------------------
+*/
+
+#direction-feature-greyscale  {
+    margin-top: -35px;
+    margin-left: -55px;
+}
+
+#text-overlay-upper {
+    z-index:100;
+    position: absolute; 
+    margin-top:185px;
+    margin-left:25px;
+}
+
+#direction-feature-colour {
+    margin-left:200px;
+}
+
+#text-overlay-lower {
+    z-index:100;
+    position: absolute;
+    margin-left:35px;
+}
+
+.text-col {
+    text-align:right;  
+}
+
+#content-text-lower {
+    margin-top:40px;
+    margin-right:50px;
+}
+
+#content-text-upper {
+    margin-top:200px;
+    margin-right:50px
+}
+
+/* 
+------------------------------------
+---------- Footer Content ----------
+------------------------------------
+*/
+
+.footer-block{
+    
+}
+
+
+/* 
 -------------------------------------------------
 -------------     License Page      -------------
 -------------------------------------------------
