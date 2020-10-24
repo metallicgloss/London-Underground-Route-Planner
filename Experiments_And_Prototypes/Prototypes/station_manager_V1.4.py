@@ -68,8 +68,6 @@ class StationHandler:
         self._head = None
         self._tail = None
         self._length = 0
-        # self._head.next_node = self._tail
-        # self._tail.prev_node = self._head
         self.__first_letter_frequency = {}
 
     def add_station_alphabetically(self, station_name: str) -> None:
@@ -95,10 +93,6 @@ class StationHandler:
                 raise Exception("Cannot insert duplicate station name")
             else:
                 # Switch head and tail
-                # self._tail = self._head
-                # self._head = station_node
-                # self._head.next_node = self._tail
-                # self._tail.prev_node = self._head
                 self._head.next_node = self._tail = self._head
                 self._tail.prev_node = self._head = station_node
                 self._tail.next_node = None
@@ -161,6 +155,8 @@ class StationHandler:
             self.__first_letter_frequency[first_letter] = 1
         else:
             self.__first_letter_frequency[first_letter] += 1
+        
+        self._length += 1
     
     def print_all_stations(self, current_node=None) -> None:
         """ Displays all the station names in order of the linked list """
@@ -222,11 +218,7 @@ class StationHandler:
     @property
     def total_stations(self):
         """ Gets the total number of stations in the double linked list """
-        # TODO Maybe a more efficient way to get total size
-        total = 0
-        for letter in self.__first_letter_frequency:
-            total += self.__first_letter_frequency[letter]
-        return total
+        return self._length
         
         
 
@@ -234,12 +226,10 @@ if __name__ == "__main__":
     S = StationHandler()
     stations = ["Adnan", "Adnan1", "Adnan2", "Adnan3", "Cumin", "Brexith", "Brexit"]
     S.add_station_alphabetically("Adnan")
-    # S.add_station_alphabetically("Adnan1")
-    
     S.add_station_alphabetically("Daibion")
     S.add_station_alphabetically("Adnan1")
-    S.add_station_alphabetically("01") # 3
-    S.add_station_alphabetically("Cumin") # 3
+    S.add_station_alphabetically("01")
+    S.add_station_alphabetically("Cumin")
     S.add_station_alphabetically("Berlin")
     S.add_station_alphabetically("Adnan2")
     S.add_station_alphabetically("Adnan3")
@@ -247,7 +237,9 @@ if __name__ == "__main__":
     S.add_station_alphabetically("Breath")
     S.add_station_alphabetically("Brexit")
     S.add_station_alphabetically("Denmark")
-    S.print_all_stations()
+    # S.print_all_stations()
+    # print("##############")
+    print(S.total_stations)
     # x = S.get_station_node_by_name("Breath")
     # S.print_all_stations()
     # print("###############")
