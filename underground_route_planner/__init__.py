@@ -1,0 +1,1 @@
+default_app_config = 'underground_route_planner.apps.UndergroundRoutePlannerConfig'
