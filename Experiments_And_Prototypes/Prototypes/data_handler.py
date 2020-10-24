@@ -4,6 +4,8 @@ import time
 import array
 import pandas as pd
 import sys
+from pprint import pprint
+
 sys.path.append("../Experiments_And_Prototypes/Prototypes/station_manager.py")
 
 
@@ -43,23 +45,26 @@ if __name__ == "__main__":
 
     """Inserting all the connections"""
     def insert_connections(dataframe, S):
-        for i in range(dataframe.size):
-            origin = S.get_station_node_by_name(
-                dataframe["Origin"].iloc[i]
-            )
-            destination = S.get_station_node_by_name(
-                dataframe["Destination"].iloc[i]
-            )
-            line = dataframe["Line"].iloc[i]
-            time = int(dataframe["Time"].iloc[i])
-            try:
-                origin.add_station_connection(destination, time, line)
-            except Exception:
+        for i in range(len(data.index)):
+            if pd.isna(data["Destination"].iloc[i]):
                 pass
+            else:
+                origin = S.get_station_node_by_name(
+                    dataframe["Origin"].iloc[i]
+                )
+                destination = S.get_station_node_by_name(
+                    dataframe["Destination"].iloc[i]
+                )
+                line = dataframe["Line"].iloc[i]
+                time = int(dataframe["Time"].iloc[i])
+                try:
+                    origin.add_station_connection(destination, time, line)
+                except Exception:
+                    pass
         return S
 
     S = insert_stations(data, S)
-    """This returns some duplicated stations, however, those are issues on the data sanitization with white spaces"""
     S.print_all_stations()
-    #S = insert_connections(data,S)
+    S = insert_connections(data,S)
+    print(S.get_station_node_by_name("Bank").get_station_connection("Waterloo"))
     # S.print_all_stations()
