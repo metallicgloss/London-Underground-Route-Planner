@@ -1,0 +1,436 @@
+/* 
+-------------------------------------------------
+-------------     Global Styles     -------------
+-------------------------------------------------
+*/
+
+:root {
+    --primary-black: #2D3039;
+    --secondary-black: #747780;
+    --primary-blue: #113B92;
+    --secondary-blue: #0060a8;
+    --off-white: #EBEBEB;
+    /* Underground Colour Codes */
+    --bakerloo-line: #b26300;
+    --central-line: #DC241F;
+    --circle-line: #FFD329;
+    --district-line: #007D32;
+    --hsmith-line: #F4A9BE;
+    --jubilee-line: #A1A5A7;
+    --metropolitan-line: #9B0058;
+    --northern-line: #000;
+    --piccadilly-line: #0019A8;
+    --victoria-line: #0098D8;
+    --waterloo-line: #93CEBA;
+}
+
+@font-face {
+    font-family: 'GT Haptik';
+    font-style: normal;
+    font-weight: normal;
+    src: url('/static/fonts/GT_Haptik_Regular.ttf') format("truetype");
+}
+
+@font-face {
+    font-family: 'GT Haptik';
+    font-style: normal;
+    font-weight: bold;
+    src: url('/static/fonts/GT_Haptik_Bold.ttf') format("truetype");
+}
+
+body {
+    font-family: 'GT Haptik';
+    max-width: 100%;
+    min-height: 100%;
+}
+
+@media (min-width: 1800px) {
+    .container {
+        max-width: 1400px;
+    }
+}
+
+/* 
+-------------------------------------------------
+-------------     Navbar Styles     -------------
+-------------------------------------------------
+*/
+
+.navbar-custom {
+    padding-bottom: 0.8rem;
+    padding-top: 0.8rem;
+}
+
+.navbar-custom .navbar-brand {
+    color: var(--primary-black);
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 750;
+    line-height: 45px;
+    margin-left: -25px;
+}
+
+.navbar-custom .navbar-brand:hover {
+    color: var(--secondary-black)
+}
+
+.navbar-custom .navbar-collapse {
+    margin-right: -24px;
+}
+
+.navbar-custom .navbar-nav .nav-item {
+    margin-left: 25px;
+}
+
+.navbar-custom .navbar-nav .nav-item .nav-link {
+    color: var(--primary-black);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 18px;
+}
+
+/* 
+-------------------------------------------------
+-------------     Header Styles     -------------
+-------------------------------------------------
+*/
+
+.header-block {
+    margin-top: 150px;
+    overflow: hidden;
+    position: relative;
+}
+
+.subpage-header-block {
+    margin-top: 90px;
+}
+
+.header-block .header-block-content {
+    position: relative;
+    z-index: 1;
+}
+
+.header-block .header-block-content .header-block-heading {
+    font-size: 40px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 50px;
+}
+
+.header-block .header-block-content .header-block-subheading, .header-block .header-block-content .subpage-block-subheading {
+    font-size: 20px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 25px;
+}
+
+.header-block .header-block-content .subpage-block-heading {
+    padding-top: 60px;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 50px;
+}
+
+/* 
+-------------------------------------------------
+-------------  Selection Box Styles -------------
+-------------------------------------------------
+*/
+
+.homepage-selection {
+    margin-top: -100px;
+    text-align: right;
+}
+
+.homepage-selection svg {
+    position: relative;
+    z-index: 1;
+}
+
+.homepage-selection .selection-box {
+    background: #FFFFFF;
+    border-radius: 20px;
+    box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.1);
+    height: 90px;
+    margin-top: -125px;
+    overflow: hidden;
+    padding: 25px;
+    position: relative;
+    text-align: left;
+    transition: all 0.3s ease-in-out;
+    width: 100%;
+    z-index: 2;
+}
+
+.homepage-selection .selection-box-large {
+    height: auto !important;
+    min-height: 500px;
+    overflow-y: auto;
+}
+
+.homepage-selection .selection-box .selection-title {
+    color: var(--secondary-black);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 20px;
+    margin-bottom: 0;
+}
+
+.homepage-selection input {
+    border: none;
+    outline: none;
+    color: var(--primary-black);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 750;
+    line-height: 20px;
+}
+
+.homepage-selection #train-graphic {
+    margin-top: -42px;
+    margin-left: 2px;
+}
+
+.homepage-selection .selection-button {
+    text-align: right;
+}
+
+.homepage-selection .selection-button #selection-submit-button {
+    background: var(--primary-blue);
+    border-radius: 10px;
+    border: 0;
+    color: #fff;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 750;
+    height: 54px;
+    line-height: 20px;
+    margin-top: -5px;
+    outline: none;
+    width: 116px;
+}
+
+.homepage-selection .selection-button #selection-submit-button:hover {
+    background: var(--secondary-blue);
+}
+
+/* 
+-------------------------------------------------
+-------------       Route Box       -------------
+-------------------------------------------------
+*/
+
+.route-selection {
+    display: none;
+}
+
+.route-selection hr {
+    color: var(--off-white);
+    margin-top: 25px;
+    margin-bottom: 35px;
+}
+
+.route-selection .route-plan {
+    display: inline;
+    width: 75%;
+}
+
+.route-selection .route-plan table {
+    margin-bottom: 0;
+}
+
+.route-selection .route-plan th {
+    border-top: none;
+    border-bottom: none;
+    color: var(--secondary-black);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 20px;
+    padding: 0px 0px 20px 0px;
+}
+
+.route-selection .route-plan td {
+    border-top: none;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 20px;
+    padding: 0px 0px 20px 0px;
+}
+
+.route-selection .route-map {
+    display: inline;
+    width: 25%;
+}
+
+.route-selection .route-map #map-object {
+    width: 100%;
+    height: 470px;
+    border-radius: 10px;
+}
+
+.route-summary {
+    margin-top: 25px;
+}
+
+.route-summary .summary-heading {
+    margin-top: -20px;
+    margin-bottom: 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--off-white);
+}
+
+.route-summary .summary-heading p {
+    display: inline-block;
+    position: relative;
+    top: 20px;
+    padding: 0 15px 0 0;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
+    color: var(--secondary-black);
+    background: #fff;
+}
+
+.route-summary ol {
+    padding-left: 20px;
+    line-height: 20px;
+    margin-bottom: 20px;
+}
+
+.route-summary li {
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+/* 
+-----------------------------------------------------
+-------------    Homepage Content       -------------
+-----------------------------------------------------
+*/
+
+#direction-feature-greyscale  {
+    margin-top: -35px;
+    margin-left: -55px;
+}
+
+#text-overlay-upper {
+    z-index:100;
+    position: absolute; 
+    margin-top:185px;
+    margin-left:25px;
+}
+
+#direction-feature-colour {
+    margin-left:200px;
+}
+
+#text-overlay-lower {
+    z-index:100;
+    position: absolute;
+    margin-left:35px;
+}
+
+.text-col {
+    text-align:right;  
+}
+
+#content-text-lower {
+    margin-top:40px;
+    margin-right:50px;
+}
+
+#content-text-upper {
+    margin-top:200px;
+    margin-right:50px
+}
+
+/* 
+------------------------------------
+---------- Footer Content ----------
+------------------------------------
+*/
+
+.footer-block{
+    
+}
+
+
+/* 
+-------------------------------------------------
+-------------     License Page      -------------
+-------------------------------------------------
+*/
+
+.license-list {
+    margin-top: 75px;
+}
+
+/* 
+--------------------------------------------------
+---------------- User Guide Pages ----------------
+--------------------------------------------------
+*/
+
+.user-guide-section {
+    margin-bottom: 100px;
+}
+
+.user-guide-description {
+    margin-top: 30px;
+}
+
+/* 
+-------------------------------------------------
+---------- Official Underground Colors ----------
+-------------------------------------------------
+*/
+
+.bakerloo {
+    color: var(--bakerloo-line);
+}
+
+.central {
+    color: var(--central-line);
+}
+
+.circle {
+    color: var(--circle-line);
+}
+
+.district {
+    color: var(--district-line);
+}
+
+.hsmith {
+    color: var(--hsmith-line);
+}
+
+.jubilee {
+    color: var(--jubilee-line);
+}
+
+.metropolitan {
+    color: var(--metropolitan-line);
+}
+
+.northern {
+    color: var(--northern-line);
+}
+
+.piccadilly {
+    color: var(--piccadilly-line);
+}
+
+.victoria {
+    color: var(--victoria-line);
+}
+
+.waterloo {
+    color: var(--waterloo-line);
+}
