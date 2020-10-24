@@ -14,7 +14,7 @@ class StationHandler:
             self._connected_stations = {}
             self._prev_node = None
             self._next_node = None
-        
+
         def add_station_connection(self, station_node: object, time_taken: int, train_line: str, bidirectional=True):
             """ Connects another station to this station object and vice versa. This means
                 you do not need to add the station connection in the opposite direction"""
@@ -22,22 +22,29 @@ class StationHandler:
             if station_name in self._connected_stations.keys():
                 # Check connection does not already exist
                 if self._connected_stations[station_name]["TRAIN_LINE"] == train_line and \
-                    self._connected_stations[station_name]["STATION_NODE"] == station_node:
-                        raise Exception("Attempted duplicate connection entry")
+                        self._connected_stations[station_name]["STATION_NODE"] == station_node:
+                    raise Exception("Attempted duplicate connection entry")
                 else:
-                    self._connected_stations[station_name]["TIME_TO"].append(time_taken)
-                    self._connected_stations[station_name]["TRAIN_LINE"].append(train_line)
-                    self._connected_stations[station_name]["STATION_NODE"].append(station_node)
+                    self._connected_stations[station_name]["TIME_TO"].append(
+                        time_taken
+                    )
+                    self._connected_stations[station_name]["TRAIN_LINE"].append(
+                        train_line
+                    )
+                    self._connected_stations[station_name]["STATION_NODE"].append(
+                        station_node
+                    )
             else:
                 connected_station_information = {
-                    "TIME_TO": array("i",[time_taken]),
+                    "TIME_TO": array("i", [time_taken]),
                     "TRAIN_LINE": [train_line],
                     "STATION_NODE": [station_node]
                 }
                 self._connected_stations[station_name] = connected_station_information
             # Add the station in the opposite direction
             if bidirectional and self._station_name not in station_node.connected_stations:
-                station_node.add_station_connection(self, time_taken, train_line)
+                station_node.add_station_connection(
+                    self, time_taken, train_line)
 
         def get_station_connection(self, station_name: str) -> dict:
             """ Returns the data about the station connection to another station"""
@@ -245,7 +252,7 @@ class StationHandler:
     def total_stations(self):
         """ Gets the total number of stations in the double linked list """
         return self._length
-    
+
     def get_all_station_names(self) -> list:
         """ Returns a list of the station names stored in the double linked list """
         self.set_pointer(1)
@@ -255,25 +262,25 @@ class StationHandler:
             station_name.append(current_station.station_name)
             current_station = self.get_next_station()
         return station_name
-    
+
     def get_next_station(self) -> object:
         """ Gets the next station being pointed at by the pointer.
             Will return None if reached the end """
         if self._pointer is not None:
             self._pointer = self._pointer.next_node
         return self._pointer
-    
+
     def get_prev_station(self) -> object:
         """ Gets the previous station being pointed at by the pointer.
             Will return None if reached the end """
         if self._pointer is not None:
             self._pointer = self._pointer.prev_node
         return self._pointer
-    
+
     def get_current_station(self) -> object:
         """ Gets the current station being pointed at by the pointer """
         return self._pointer
-    
+
     def set_pointer(self, direction=-1) -> None:
         """Sets the pointer to the head or tail, depending on if the 
         direction = 1 (HEAD) or -1 == (TAIL)"""
