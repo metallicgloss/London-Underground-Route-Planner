@@ -1,5 +1,8 @@
 # Sanitisation Review
 
+## IMPORTANT NOTES
+The testing carried out in this section should be considered void due to incorrect assumptions made that related to the data (linear trainline without connections).
+
 ## Assumptions & Testing Notes
 Testing was carried out using only the data that was provided with no context to carry out obvious validation problems such as missing data, incorrect data or duplicated content.
 Following the data provided and the station order, it was assumed that the data should be interpreted as a linear train line.
