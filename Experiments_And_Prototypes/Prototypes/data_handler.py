@@ -2,8 +2,8 @@
 import time, array
 import pandas as pd
 import sys
-sys.path.append("../Experiments_And_Prototypes/Prototypes/station_manager_fixed.py")
-from station_manager_fixed import StationHandler
+sys.path.append("../Experiments_And_Prototypes/Prototypes/station_manager.py")
+from station_manager import StationHandler
 
 
 if __name__ == "__main__":

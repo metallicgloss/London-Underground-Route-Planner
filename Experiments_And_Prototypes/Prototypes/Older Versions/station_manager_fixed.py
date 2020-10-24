@@ -239,7 +239,7 @@ if __name__ == "__main__":
     S.add_station_alphabetically("Denmark")
     # S.print_all_stations()
     # print("##############")
-    print(S.total_stations)
+    # print(S.total_stations)
     # x = S.get_station_node_by_name("Breath")
     # S.print_all_stations()
     # print("###############")
