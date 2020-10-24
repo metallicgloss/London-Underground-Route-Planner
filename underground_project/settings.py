@@ -18,7 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tfl_route_planner',
+    'underground_route_planner',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -29,11 +29,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-ROOT_URLCONF = 'tfl_project.urls'
+ROOT_URLCONF = 'underground_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        "DIRS": ["tfl_route_planner/templates/"],
+        "DIRS": ["underground_route_planner/templates/"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -46,7 +46,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'tfl_project.wsgi.application'
+WSGI_APPLICATION = 'underground_project.wsgi.application'
 
 
 # Database
