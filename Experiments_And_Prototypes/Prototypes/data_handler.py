@@ -66,5 +66,7 @@ if __name__ == "__main__":
     S = insert_stations(data, S)
     S.print_all_stations()
     S = insert_connections(data,S)
-    print(S.get_station_node_by_name("Bank").get_station_connection("Waterloo"))
+    print(S.get_station_node_by_name("Bank").get_station_connection("Moorgate"))
+    print(S.get_station_node_by_name("Bermondsey").get_station_connection("Canada Water"))
+    print(S.get_station_node_by_name("Green Park").get_station_connection("Bond Street"))
     # S.print_all_stations()
