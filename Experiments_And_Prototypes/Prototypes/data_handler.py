@@ -13,16 +13,19 @@ if __name__ == "__main__":
     data.columns = ["Line", "Origin", "Destination", "Time"]
     S = StationHandler()
 
+    print(data.iloc[50:150])
 
-    def data_handler(dataframe, S):
+    """Inserting all the stations in alphabetic order"""
+    def insert_stations(dataframe, S):
         for i in range(dataframe.size):
-            if dataframe["Origin"].iloc[i] == S._head.station_name:
-                print("station already added")
-            S.add_station_alphabetically(dataframe["Origin"].iloc[i])
+            try:
+                S.add_station_alphabetically(dataframe["Origin"].iloc[i])
+            except Exception:
+                pass
         return S
 
-
-    S = data_handler(data, S)
+    S = insert_stations(data, S)
+    """This does return some duplicated stations, however, those are issues on the data sanitization"""
     S.print_all_stations()
 
 
