@@ -1,6 +1,6 @@
 """A class used to store each station as a node and its connections"""
 import time
-import array
+from array import array
 
 
 class StationHandler:
@@ -14,21 +14,30 @@ class StationHandler:
             self._connected_stations = {}
             self._prev_node = None
             self._next_node = None
-
-        def add_station_connection(self, station_node: object, time_taken: int, train_line: str):
-            """ Connects another station to this station object """
-            connected_station_infomation = {
-                "TIME_TO": time_taken,
-                "TRAINLINE": train_line,
-                "Station": station_node
-            }
-            if station_node._station_name in self._connected_stations.keys():
-                raise Exception(
-                    "The station '" + station_node._station_name +
-                    "' is already connected to the station '" + self._station_name + "'"
-                )
+        
+        def add_station_connection(self, station_node: object, time_taken: int, train_line: str, bidirectional=True):
+            """ Connects another station to this station object and vice versa. This means
+                you do not need to add the station connection in the opposite direction"""
+            station_name = station_node.station_name
+            if station_name in self._connected_stations.keys():
+                # Check connection does not already exist
+                if self._connected_stations[station_name]["TRAIN_LINE"] == train_line and \
+                    self._connected_stations[station_name]["STATION_NODE"] == station_node:
+                        raise Exception("Attempted duplicate connection entry")
+                else:
+                    self._connected_stations[station_name]["TIME_TO"].append(time_taken)
+                    self._connected_stations[station_name]["TRAIN_LINE"].append(train_line)
+                    self._connected_stations[station_name]["STATION_NODE"].append(station_node)
             else:
-                self._connected_stations[station_node._station_name] = connected_station_infomation
+                connected_station_information = {
+                    "TIME_TO": array("i",[time_taken]),
+                    "TRAIN_LINE": [train_line],
+                    "STATION_NODE": [station_node]
+                }
+                self._connected_stations[station_name] = connected_station_information
+            # Add the station in the opposite direction
+            if bidirectional and self._station_name not in station_node.connected_stations:
+                station_node.add_station_connection(self, time_taken, train_line)
 
         def get_station_connection(self, station_name: str) -> dict:
             """ Returns the data about the station connection to another station"""
@@ -278,25 +287,25 @@ class StationHandler:
 
 if __name__ == "__main__":
     S = StationHandler()
-    stations = [
-        "Adnan", "Adnan1", "Adnan2",
-        "Adnan3", "Cumin", "Brexith", "Brexit"
-    ]
-    S.add_station_alphabetically("Adnan")
-    S.add_station_alphabetically("Daibion")
-    S.add_station_alphabetically("Adnan1")
-    S.add_station_alphabetically("01")
-    S.add_station_alphabetically("Cumin")
-    S.add_station_alphabetically("Berlin")
-    S.add_station_alphabetically("Adnan2")
-    S.add_station_alphabetically("Adnan3")
-    S.add_station_alphabetically("Adnan4")
-    S.add_station_alphabetically("Breath")
-    S.add_station_alphabetically("Brexit")
-    S.add_station_alphabetically("Denmark")
+    # stations = [
+    #     "Adnan", "Adnan1", "Adnan2",
+    #     "Adnan3", "Cumin", "Brexith", "Brexit"
+    # ]
+    # S.add_station_alphabetically("Adnan")
+    # S.add_station_alphabetically("Daibion")
+    # S.add_station_alphabetically("Adnan1")
+    # S.add_station_alphabetically("01")
+    # S.add_station_alphabetically("Cumin")
+    # S.add_station_alphabetically("Berlin")
+    # S.add_station_alphabetically("Adnan2")
+    # S.add_station_alphabetically("Adnan3")
+    # S.add_station_alphabetically("Adnan4")
+    # S.add_station_alphabetically("Breath")
+    # S.add_station_alphabetically("Brexit")
+    # S.add_station_alphabetically("Denmark")
     # S.print_all_stations()
     # print("##############")
-    print(S.total_stations)
+    # print(S.total_stations)
     # x = S.get_station_node_by_name("Breath")
     # S.print_all_stations()
     # print("###############")
