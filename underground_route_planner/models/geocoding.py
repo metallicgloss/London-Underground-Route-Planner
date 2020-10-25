@@ -9,7 +9,7 @@ class GeoCoding:
             key='AIzaSyB2JJaU3ySjHvqyO7a_HGNf3-pS0dZBjo4'
         )
 
-    def get_coordinates(self, address_query):
+    def get_coordinates(self, address_query: str):
         # Return coordinates for address query.
 
         # Assign variable for data returned from query.
