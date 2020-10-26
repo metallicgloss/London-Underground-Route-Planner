@@ -1,5 +1,6 @@
 import time
 from array import array
+import re
 
 # --------------------------------------------------------------------------- #
 #                                  CONTENTS                                   #
@@ -174,27 +175,28 @@ class StationHandler:
 
         elif self._head is not None and self._tail is None:
             # Head set but not tail. Set tail and re arrange if needed
-            if self._head.station_name < station_name:
+            if self._head.station_name.replace(" ", "") < station_name.replace(" ", ""):
                 # head is before tail, set tail
                 station_node.prev_node = self._head
                 self._tail = station_node
                 self._head.next_node = self._tail
 
-            elif self._head.station_name == station_name:
+            elif self._head.station_name.replace(" ", "") == station_name.replace(" ", ""):
                 # Duplicate station name found
                 raise Exception("Cannot insert duplicate station name")
 
             else:
                 # Switch head and tail
-                self._head.next_node = self._tail = self._head
-                self._tail.prev_node = self._head = station_node
-                self._tail.next_node = None
+                self._tail = self._head
+                self._head = station_node
+                self._head.next_node = self._tail
+                self._tail.prev_node = self._head
 
         else:
             # search list for insertion point
             reached_end_of_list = False
-            while (direction == 1 and current_node.station_name <= station_name) or \
-                    (direction == -1 and current_node.station_name >= station_name):
+            while (direction == 1 and current_node.station_name.replace(" ", "") <= station_name.replace(" ", "")) or \
+                    (direction == -1 and current_node.station_name.replace(" ", "") >= station_name.replace(" ", "")):
                 # If the current node has the same name as the new station name.
                 if current_node.station_name == station_name:
                     raise Exception("Cannot insert duplicate station name")
@@ -224,7 +226,7 @@ class StationHandler:
 
             # Insert into double linked list
             if direction == 1:
-                if current_node.station_name == self._head.station_name and station_name < self._head.station_name:
+                if current_node.station_name == self._head.station_name and station_name.replace(" ", "") < self._head.station_name.replace(" ", ""):
                     # insert record before head
                     station_node.next_node = self._head
                     self._head.prev_node = station_node
@@ -242,7 +244,7 @@ class StationHandler:
                         current_node.prev_node = station_node
 
             else:
-                if current_node.station_name == self._tail.station_name and station_name > self._tail.station_name:
+                if current_node.station_name == self._tail.station_name and station_name.replace(" ", "") > self._tail.station_name.replace(" ", ""):
                     # insert record after tail
                     station_node.prev_node = self._tail
                     self._tail.next_node = station_node
@@ -332,6 +334,21 @@ class StationHandler:
             direction = -1
 
         return direction
+    
+    # Finds all station names that begin with the parameter station_name
+    def query_station_names(self, station_name: str) -> list:
+        current_node = self._head
+        station_names = []
+        
+        # Go through each station and check if the start of any work matches the station_name provided
+        while current_node is not None:
+            if re.search("^" + station_name + "| " + station_name, current_node.station_name, re.IGNORECASE) is not None:
+                station_names.append(current_node.station_name)
+            current_node = current_node.next_node
+        
+        return station_names
+            
+        
 
     # Returns the total number of station stored in the list.
     @property
