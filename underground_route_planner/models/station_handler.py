@@ -191,9 +191,6 @@ class StationHandler:
                 self._head = station_node
                 self._head.next_node = self._tail
                 self._tail.prev_node = self._head
-                # self._head.next_node = self._tail = self._head
-                # self._tail.prev_node = self._head = station_node
-                # self._tail.next_node = None
 
         else:
             # search list for insertion point
