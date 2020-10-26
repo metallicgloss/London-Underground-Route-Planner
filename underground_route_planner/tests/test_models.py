@@ -1,5 +1,6 @@
 from django.test import TestCase
 from underground_route_planner.models.station_handler import StationHandler
+from underground_route_planner.models.route_planner import RoutePlanner
 from underground_route_planner.models.geocoding import GeoCoding
 
 
@@ -7,6 +8,7 @@ from underground_route_planner.models.geocoding import GeoCoding
 #                                  CONTENTS                                   #
 #                            1. GeoCoding Tests                               #
 #                            2. StationHandler Tests                          #
+#                            3. RoutePlanner Tests                            #
 # --------------------------------------------------------------------------- #
 
 # --------------------------------------------------------------------------- #
@@ -40,7 +42,7 @@ class StationHanderTester(TestCase):
     # Test setup.
     @classmethod
     def setUpTestData(self):
-        # Initialise Geocoding object.
+        # Initialise Station Handler object.
         self.station_handler = StationHandler()
         pass
 
@@ -88,3 +90,17 @@ class StationHanderTester(TestCase):
                 "Elephant & Castle Underground Station"
             )
         )
+
+# --------------------------------------------------------------------------- #
+#                            2. RoutePlanner Tests                            #
+# --------------------------------------------------------------------------- #
+
+
+class RoutePlannerTester(TestCase):
+    # Test setup.
+    @classmethod
+    def setUpTestData(self):
+        # Initialise Route Planner Object
+        self.station_handler = StationHandler()
+        self.route_planner = RoutePlanner(self.station_handler)
+        pass
