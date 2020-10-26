@@ -1,4 +1,4 @@
-from .station_handler import StationHandler
+from station_handler import StationHandler
 
 # --------------------------------------------------------------------------- #
 #                                  CONTENTS                                   #
