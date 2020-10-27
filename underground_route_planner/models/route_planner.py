@@ -107,15 +107,20 @@ class RoutePlanner:
 
                 quickest_train_line = current_station.connected_stations[
                     connected_station]["TRAIN_LINE"][quickest_time_index]
-
+                
+                # Add extra minute if station is not start or destination station
+                train_wait_time = 1
+                if current_station.station_name == starting_station_name or current_station.station_name == destination_station_name:
+                    train_wait_time = 0
+                
                 if (
                     (current_station_shortest_time is None or self._route_calculator[connected_station]["SHORTEST_TIME"] is None)
                     or
-                    (current_station_shortest_time + quickest_time <
+                    (current_station_shortest_time + quickest_time + train_wait_time <
                      self._route_calculator[connected_station]["SHORTEST_TIME"])
                 ):
                     self._route_calculator[connected_station] = {
-                        'SHORTEST_TIME': current_station_shortest_time + quickest_time,
+                        'SHORTEST_TIME': current_station_shortest_time + quickest_time + train_wait_time,
                         'FROM_STATION': current_station_name,
                         'FROM_TRAIN_LINE': quickest_train_line,
                         'CURRENT_STATION': connected_station,
@@ -125,7 +130,7 @@ class RoutePlanner:
             remaining_stations.remove(current_station_name)
 
         route = []
-
+        
         next_station = self._route_calculator[destination_station_name]
         while next_station["CURRENT_STATION"] != starting_station_name:
             route.append({
@@ -136,3 +141,41 @@ class RoutePlanner:
             next_station = self._route_calculator[next_station["FROM_STATION"]]
 
         return route[::-1]
+
+if __name__ == "__main__":
+    S = StationHandler()
+
+    S.add_station_alphabetically("A")
+    S.add_station_alphabetically("B")
+    S.add_station_alphabetically("C")
+    S.add_station_alphabetically("D")
+    S.add_station_alphabetically("E")
+
+    # Add connections from A
+    S.get_station_node_by_name("A").add_station_connection(
+        S.get_station_node_by_name("C"), 3, "RED")
+    S.get_station_node_by_name("A").add_station_connection(
+        S.get_station_node_by_name("D"), 4, "RED")
+    S.get_station_node_by_name("A").add_station_connection(
+        S.get_station_node_by_name("D"), 5, "BLUE")
+
+    # Add connections from B
+    S.get_station_node_by_name("B").add_station_connection(
+        S.get_station_node_by_name("E"), 3, "BLUE")
+
+    # Add connections from C
+    S.get_station_node_by_name("C").add_station_connection(
+        S.get_station_node_by_name("D"), 2, "BLUE")
+    S.get_station_node_by_name("C").add_station_connection(
+        S.get_station_node_by_name("B"), 14, "RED")
+    S.get_station_node_by_name("C").add_station_connection(
+        S.get_station_node_by_name("B"), 7, "BLUE")
+
+    # Add connections from D
+    S.get_station_node_by_name("D").add_station_connection(
+        S.get_station_node_by_name("E"), 2, "RED")
+
+    # Add connectiond from E
+    # There is None
+    R = RoutePlanner(S)
+    print(R.get_route("E", "C"))
