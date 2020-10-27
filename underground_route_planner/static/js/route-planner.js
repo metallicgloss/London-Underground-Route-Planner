@@ -1,29 +1,35 @@
 // Initialise bloodhound suggestion engine.
-var availableStations = new Bloodhound({
+var stationList = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    // Execute GET request on specific URL with query data.
     remote: {
-        url: "/search/",
-        replace: function (url, query) {
-            // Combine query with URL
-            return url + "#" + query;
-        },
-        ajax: {
-            beforeSend: function (query, settings) {
-                settings.data = $.param({ q: query.val() })
-            },
-            // Set request type to be GET
-            type: "GET"
-        }
+        url: '/search-station?station=%QUERY',
+        wildcard: '%QUERY'
     }
 });
 
 // Assign origin and destination fields to be typeahead fields. Point to suggestion engine.
-$('#origin-location, #destination-location').typeahead(null, {
+$('#origin-location, #destination-location').typeahead({
+    minLength: 1,
+    hint: true,
+    highlight: true,
+    autoselect: true
+}, {
     name: 'available-stations',
-    display: 'value',
-    source: availableStations
+    limit: 10,
+    source: stationList,
+
+    templates: {
+        header: '<p class="results-found">Suggested Underground Stations</p><hr>',
+        empty: [
+            '<div class="empty-message">',
+            '<p class="no-results-found">Sorry!</p><hr>No available suggestions.<br>',
+            '</div>'
+        ].join('\n'),
+        suggestion: function (data) {
+            return '<p>' + data + '</p>';
+        }
+    }
 });
 
 // Handle route search query
