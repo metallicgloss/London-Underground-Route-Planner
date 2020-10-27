@@ -16,11 +16,16 @@ $('#origin-location, #destination-location').typeahead({
     autoselect: true
 }, {
     name: 'available-stations',
-    display: 'data',
     limit: 10,
     source: stationList,
 
     templates: {
+        header: '<p class="results-found">Suggested Underground Stations</p><hr>',
+        empty: [
+            '<div class="empty-message">',
+            '<p class="no-results-found">Sorry!</p><hr>No available suggestions.<br>',
+            '</div>'
+        ].join('\n'),
         suggestion: function (data) {
             return '<p>' + data + '</p>';
         }
