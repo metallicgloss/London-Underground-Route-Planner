@@ -12,12 +12,5 @@ class UndergroundRoutePlannerConfig(AppConfig):
 
     # Executes only once on program startup after software has been initialised.
     def ready(self):
-        # TODO: Integrate XLSX load.
         self.station_handler = StationHandler()
-        self.station_handler.add_station_alphabetically("Berlin")
-        self.station_handler.add_station_alphabetically("Adnan2")
-        self.station_handler.add_station_alphabetically("Adnan3")
-        self.station_handler.add_station_alphabetically("Adnan4")
-        self.station_handler.add_station_alphabetically("Breath")
-        self.station_handler.add_station_alphabetically("Brexit")
-        self.station_handler.add_station_alphabetically("Denmark")
+        # TODO: Integrate XLSX load into handler

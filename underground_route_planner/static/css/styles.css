@@ -219,6 +219,53 @@ body {
 
 /* 
 -------------------------------------------------
+-------------    Typeahead Styles   -------------
+-------------------------------------------------
+*/
+
+.tt-menu {
+    padding: 20px;
+    margin-top: 10px;
+    margin-left: -20px;
+    width: 100%;
+    z-index: 105;
+    background: white;
+    border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 25px;
+}
+
+.tt-menu .results-found {
+    color: var(--primary-blue)
+}
+
+.tt-menu .no-results-found {
+    color: #DC241F;
+    font-weight: bold;
+}
+
+.tt-menu .empty-message {
+    margin-bottom: 5px;
+}
+
+.tt-menu .tt-suggestion {
+    margin-bottom: 5px;
+}
+
+.tt-menu .tt-suggestion:hover {
+    cursor: pointer;
+    color: var(--secondary-black);
+}
+
+.tt-menu .tt-dataset {
+    margin-bottom: -10px;
+}
+
+.selection-box .twitter-typeahead {
+    width: 100%;
+}
+
+/* 
+-------------------------------------------------
 -------------       Route Box       -------------
 -------------------------------------------------
 */
@@ -351,14 +398,6 @@ body {
 }
 
 /* 
-------------------------------------
----------- Footer Content ----------
-------------------------------------
-*/
-
-.footer-block {}
-
-/* 
 -------------------------------------------------
 -------------     License Page      -------------
 -------------------------------------------------
@@ -432,6 +471,10 @@ body {
     }
     .user-guide-description img {
         margin-top: 25px;
+    }
+    .tt-menu {
+        margin-top: -10px;
+        margin-left: 0;
     }
 }
 
