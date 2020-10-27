@@ -160,6 +160,13 @@ class StationHandler:
     def add_station_alphabetically(self, station_name: str) -> None:
         station_node = self.Station(station_name)
         direction = self.get_optimal_direction_of_travel(station_name)
+        
+        # Returns all non alphanumeric characters from the string
+        def get_only_alphanum_string(text: str) -> str:
+            return ''.join(list(filter(lambda i:  i.isalnum(), text)))
+        
+        # When determining insert index, use do not inlcude non alphanumeric characters for comparing
+        only_alphanum_station_name_param = get_only_alphanum_string(station_name)
 
         # Set starting point
         current_node = self._head
@@ -175,13 +182,13 @@ class StationHandler:
 
         elif self._head is not None and self._tail is None:
             # Head set but not tail. Set tail and re arrange if needed
-            if self._head.station_name.replace(" ", "") < station_name.replace(" ", ""):
+            if get_only_alphanum_string(self._head.station_name) < only_alphanum_station_name_param:
                 # head is before tail, set tail
                 station_node.prev_node = self._head
                 self._tail = station_node
                 self._head.next_node = self._tail
 
-            elif self._head.station_name.replace(" ", "") == station_name.replace(" ", ""):
+            elif get_only_alphanum_string(self._head.station_name) == only_alphanum_station_name_param:
                 # Duplicate station name found
                 raise Exception("Cannot insert duplicate station name")
 
@@ -195,8 +202,8 @@ class StationHandler:
         else:
             # search list for insertion point
             reached_end_of_list = False
-            while (direction == 1 and current_node.station_name.replace(" ", "") <= station_name.replace(" ", "")) or \
-                    (direction == -1 and current_node.station_name.replace(" ", "") >= station_name.replace(" ", "")):
+            while (direction == 1 and get_only_alphanum_string(current_node.station_name) <= only_alphanum_station_name_param) or \
+                    (direction == -1 and get_only_alphanum_string(current_node.station_name) >= only_alphanum_station_name_param):
                 # If the current node has the same name as the new station name.
                 if current_node.station_name == station_name:
                     raise Exception("Cannot insert duplicate station name")
@@ -226,7 +233,7 @@ class StationHandler:
 
             # Insert into double linked list
             if direction == 1:
-                if current_node.station_name == self._head.station_name and station_name.replace(" ", "") < self._head.station_name.replace(" ", ""):
+                if current_node.station_name == self._head.station_name and only_alphanum_station_name_param < get_only_alphanum_string(self._head.station_name):
                     # insert record before head
                     station_node.next_node = self._head
                     self._head.prev_node = station_node
@@ -244,7 +251,7 @@ class StationHandler:
                         current_node.prev_node = station_node
 
             else:
-                if current_node.station_name == self._tail.station_name and station_name.replace(" ", "") > self._tail.station_name.replace(" ", ""):
+                if current_node.station_name == self._tail.station_name and only_alphanum_station_name_param > get_only_alphanum_string(self._tail.station_name):
                     # insert record after tail
                     station_node.prev_node = self._tail
                     self._tail.next_node = station_node
