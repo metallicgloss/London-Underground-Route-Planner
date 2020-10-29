@@ -367,7 +367,6 @@ body {
 }
 
 #text-overlay-upper {
-    z-index: 100;
     position: absolute;
     margin-top: 185px;
     margin-left: 25px;
