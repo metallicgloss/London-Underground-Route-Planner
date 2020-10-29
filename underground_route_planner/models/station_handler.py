@@ -37,7 +37,7 @@ class StationHandler:
         # Initialise the station class, accepting input of the station name.
         def __init__(self, station_name: str):
             self._station_name = station_name
-            self._geolocation_coordinates = []
+            self._geolocation_coordinates = [0, 0]
             self._connected_stations = {}
             self._prev_node = None
             self._next_node = None
