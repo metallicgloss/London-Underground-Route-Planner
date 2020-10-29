@@ -142,8 +142,10 @@ class StationHandler:
 
         # Set the geolocation coordinates of the station object.
         @geolocation_coordinates.setter
-        def geolocation_coordinates(self, longitude: float, latitude: float):
-            self._geolocation_coordinates = [longitude, latitude]
+        def geolocation_coordinates(self, long_and_lat: list):
+            # longitude is first element, latitude is second
+            self._geolocation_coordinates = [long_and_lat[0], long_and_lat[1]]
+        
 
     # ----------------------------------------------------------------------- #
     #                    1.3 Station Handler Class Methods                    #
