@@ -36,6 +36,42 @@ class RoutePlanner:
                 "FROM_TRAIN_LINE": None,
                 "CURRENT_STATION": None
             }
+    
+    # Returns the route stored in route_calculator as a list of objects to be used by the front end
+    def _get_formatted_route(self, starting_station_name: str, destination_station_name: str) -> list:
+        route = []
+        next_station = self._route_calculator[destination_station_name]
+        prev_train_line = ""
+        while next_station["CURRENT_STATION"] != starting_station_name:
+            
+            from_station_node = self._station_handler.get_station_node_by_name(next_station["FROM_STATION"])
+            to_station_node = self._station_handler.get_station_node_by_name(next_station["CURRENT_STATION"])
+            station_change = False
+            
+            if next_station["FROM_TRAIN_LINE"] != prev_train_line:
+                prev_train_line = next_station["FROM_TRAIN_LINE"]
+                station_change = True
+            
+            route.append({
+                "FROM": {
+                    "STATION_NAME": next_station["FROM_STATION"],
+                    "STATION_NAME_FORMATTED": next_station["FROM_STATION"] + " Underground Station, London",
+                    "STATION_LAT":from_station_node.geolocation_coordinates[0],
+                    "STATION_LNG": from_station_node.geolocation_coordinates[1]
+                },
+                "TO": {
+                    "STATION_NAME": next_station["CURRENT_STATION"],
+                    "STATION_NAME_FORMATTED": next_station["CURRENT_STATION"] + " Underground Station, London",
+                    "STATION_LAT":to_station_node.geolocation_coordinates[0],
+                    "STATION_LNG": to_station_node.geolocation_coordinates[1]
+                },
+                "TRAIN_LINE": next_station["FROM_TRAIN_LINE"],
+                "CHANGE_LINE": station_change
+            })
+            next_station = self._route_calculator[next_station["FROM_STATION"]]
+        
+        return route[::-1]
+        
 
     # Calculate the quickest route from the starting station to the next station.
     def get_route(self, starting_station_name: str, destination_station_name: str) -> list:
@@ -124,15 +160,4 @@ class RoutePlanner:
             # Remove current station from remaining stations
             remaining_stations.remove(current_station_name)
 
-        route = []
-
-        next_station = self._route_calculator[destination_station_name]
-        while next_station["CURRENT_STATION"] != starting_station_name:
-            route.append({
-                "FROM": next_station["FROM_STATION"],
-                "TO": next_station["CURRENT_STATION"],
-                "TRAIN_LINE": next_station["FROM_TRAIN_LINE"]
-            })
-            next_station = self._route_calculator[next_station["FROM_STATION"]]
-
-        return route[::-1]
+        return self._get_formatted_route(starting_station_name, destination_station_name)
