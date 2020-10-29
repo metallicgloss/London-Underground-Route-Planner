@@ -228,7 +228,7 @@ body {
     margin-top: 10px;
     margin-left: -20px;
     width: 100%;
-    z-index: 105;
+    z-index: 105 !important;
     background: white;
     border-radius: 20px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 25px;
