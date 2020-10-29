@@ -1,9 +1,5 @@
-import time
-import array
-import pandas as pd
-import sys
 import os
-from pprint import pprint
+import pandas as pd
 from django.apps import AppConfig
 from underground_route_planner.models.station_handler import StationHandler
 
