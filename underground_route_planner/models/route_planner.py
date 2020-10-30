@@ -73,15 +73,13 @@ class RoutePlanner:
                 "TRAVEL_TIME": next_station["TRAVEL_TIME_BETWEEN_STATIONS"]
             })
 
-            route = route[::-1]
-
             # Update total travel time
             total_travel_time += next_station["TRAVEL_TIME_BETWEEN_STATIONS"]
 
             next_station = self._route_calculator[next_station["FROM_STATION"]]
 
         return {
-            "ROUTE": route,
+            "ROUTE": route[::-1],
             "TOTAL_TRAVEL_TIME": total_travel_time
         }
 

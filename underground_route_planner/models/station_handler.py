@@ -145,13 +145,13 @@ class StationHandler:
         def geolocation_coordinates(self, long_and_lat: list):
             # longitude is first element, latitude is second
             self._geolocation_coordinates = [long_and_lat[0], long_and_lat[1]]
-        
 
     # ----------------------------------------------------------------------- #
     #                    1.3 Station Handler Class Methods                    #
     # ----------------------------------------------------------------------- #
 
     # Initialise the station object.
+
     def __init__(self):
         self._head = None
         self._tail = None
@@ -356,7 +356,6 @@ class StationHandler:
         return station_names
 
     # Returns the total number of station stored in the list.
-
     @property
     def total_stations(self):
         return self._length
