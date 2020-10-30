@@ -1,6 +1,6 @@
 import time
-from array import array
 import re
+from array import array
 
 # --------------------------------------------------------------------------- #
 #                                  CONTENTS                                   #
@@ -37,7 +37,7 @@ class StationHandler:
         # Initialise the station class, accepting input of the station name.
         def __init__(self, station_name: str):
             self._station_name = station_name
-            self._geolocation_coordinates = []
+            self._geolocation_coordinates = [0, 0]
             self._connected_stations = {}
             self._prev_node = None
             self._next_node = None
@@ -142,8 +142,10 @@ class StationHandler:
 
         # Set the geolocation coordinates of the station object.
         @geolocation_coordinates.setter
-        def geolocation_coordinates(self, longitude: float, latitude: float):
-            self._geolocation_coordinates = [longitude, latitude]
+        def geolocation_coordinates(self, long_and_lat: list):
+            # longitude is first element, latitude is second
+            self._geolocation_coordinates = [long_and_lat[0], long_and_lat[1]]
+        
 
     # ----------------------------------------------------------------------- #
     #                    1.3 Station Handler Class Methods                    #
@@ -160,13 +162,14 @@ class StationHandler:
     def add_station_alphabetically(self, station_name: str) -> None:
         station_node = self.Station(station_name)
         direction = self.get_optimal_direction_of_travel(station_name)
-        
+
         # Returns all non alphanumeric characters from the string
         def get_only_alphanum_string(text: str) -> str:
             return ''.join(list(filter(lambda i:  i.isalnum(), text)))
-        
+
         # When determining insert index, use do not inlcude non alphanumeric characters for comparing
-        only_alphanum_station_name_param = get_only_alphanum_string(station_name)
+        only_alphanum_station_name_param = get_only_alphanum_string(
+            station_name)
 
         # Set starting point
         current_node = self._head
@@ -201,7 +204,6 @@ class StationHandler:
 
         else:
             # search list for insertion point
-            reached_end_of_list = False
             while (direction == 1 and get_only_alphanum_string(current_node.station_name) <= only_alphanum_station_name_param) or \
                     (direction == -1 and get_only_alphanum_string(current_node.station_name) >= only_alphanum_station_name_param):
                 # If the current node has the same name as the new station name.
@@ -213,7 +215,6 @@ class StationHandler:
                         # Going from head -> tail
                         if current_node.next_node is None:
                             # Reached end of list and couldn't find place to insert, insert to tail
-                            reached_end_of_list = True
                             break
                         else:
                             current_node = current_node.next_node
@@ -221,7 +222,6 @@ class StationHandler:
                         # Going from tail -> head
                         if current_node.prev_node is None:
                             # Reached start of list and couldn't find place to insert, insert to head
-                            reached_end_of_list = True
                             break
 
                         else:
@@ -341,23 +341,22 @@ class StationHandler:
             direction = -1
 
         return direction
-    
+
     # Finds all station names that begin with the parameter station_name
     def query_station_names(self, station_name: str) -> list:
         current_node = self._head
         station_names = []
-        
+
         # Go through each station and check if the start of any work matches the station_name provided
         while current_node is not None:
             if re.search("^" + station_name + "| " + station_name, current_node.station_name, re.IGNORECASE) is not None:
                 station_names.append(current_node.station_name)
             current_node = current_node.next_node
-        
+
         return station_names
-            
-        
 
     # Returns the total number of station stored in the list.
+
     @property
     def total_stations(self):
         return self._length
