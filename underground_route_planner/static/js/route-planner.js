@@ -77,6 +77,8 @@ $('#selection-submit-button').click(function () {
         existingSearch = true;
         var locations = [];
         var stations = 0;
+        var timeToStaton = 0;
+        var subTotalTime = 0;
 
         // Execute ajax call to get route data.
         $.ajax({
@@ -86,20 +88,28 @@ $('#selection-submit-button').click(function () {
                 "destination_location": $('#destination-location').val()
             },
             success: function (response) {
-                stations = Object.keys(response).length;
+                stations = Object.keys(response['ROUTE']).length;
 
                 // For each route in response.
-                $.each(response, function (i, route) {
+                $.each(response['ROUTE'], function (i, route) {
+                    // Get the time taken to get to station from last route.
+                    if (i != 0) {
+                        // If not the first station, set time to station from previous route.
+                        timeToStaton = response['ROUTE'][i - 1]['TRAVEL_TIME']
+                    }
+
+                    // Append the from station to the table with the time taken to get to it from the previous.
                     $('#route-table').append(
                         `
                         <tr>
                             <td>${route['FROM']['STATION_NAME']}</td>
                             <td class="${route['TRAIN_LINE'].toLowerCase()}">${route['TRAIN_LINE']} Line</td>
-                            <td>0 mins</td>
+                            <td>${subTotalTime} mins <small>(+${timeToStaton} mins)</small></td>
                         </tr>
                         `
                     );
 
+                    // Add pathway to locations for mapping.
                     locations.push(
                         {
                             lat: route['FROM']['STATION_LAT'],
@@ -108,19 +118,26 @@ $('#selection-submit-button').click(function () {
                         }
                     )
 
+                    // Add travel time from previous station to running total.
+                    subTotalTime += route['TRAVEL_TIME']
+
                     // If last route in the list.
-                    if (Object.keys(response).length == (i + 1)) {
+                    if (stations == (i + 1)) {
                         $('#route-table tr:last').after(
                             `
                             <tr>
                                 <td>${route['TO']['STATION_NAME']}</td>
                                 <td>-</td>
-                                <td>0 mins</td>
+                                <td>${subTotalTime} mins  <small>(+${route['TRAVEL_TIME']} mins)</small></td>
                             </tr>
                         `
                         );
                     }
+
                 });
+
+                console.log(response['TOTAL_TRAVEL_TIME'])
+                $('#total-travel-time').html(response['TOTAL_TRAVEL_TIME'])
 
                 // Expand route box.
                 $('.selection-box').addClass('selection-box-large');
