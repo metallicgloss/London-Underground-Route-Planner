@@ -42,6 +42,7 @@ class RoutePlanner:
         route = []
         next_station = self._route_calculator[destination_station_name]
         prev_train_line = ""
+        total_travel_time = 0
 
         while next_station["CURRENT_STATION"] != starting_station_name:
             from_station_node = self._station_handler.get_station_node_by_name(
@@ -59,22 +60,30 @@ class RoutePlanner:
             route.append({
                 "FROM": {
                     "STATION_NAME": next_station["FROM_STATION"],
-                    "STATION_NAME_FORMATTED": next_station["FROM_STATION"] + " Underground Station, London",
                     "STATION_LNG": from_station_node.geolocation_coordinates[0],
                     "STATION_LAT": from_station_node.geolocation_coordinates[1]
                 },
                 "TO": {
                     "STATION_NAME": next_station["CURRENT_STATION"],
-                    "STATION_NAME_FORMATTED": next_station["CURRENT_STATION"] + " Underground Station, London",
                     "STATION_LNG": to_station_node.geolocation_coordinates[0],
                     "STATION_LAT": to_station_node.geolocation_coordinates[1]
                 },
                 "TRAIN_LINE": next_station["FROM_TRAIN_LINE"],
-                "CHANGE_LINE": station_change
+                "CHANGE_LINE": station_change,
+                "TRAVEL_TIME": next_station["TRAVEL_TIME_BETWEEN_STATIONS"]
             })
+
+            route = route[::-1]
+
+            # Update total travel time
+            total_travel_time += next_station["TRAVEL_TIME_BETWEEN_STATIONS"]
+
             next_station = self._route_calculator[next_station["FROM_STATION"]]
 
-        return route[::-1]
+        return {
+            "ROUTE": route,
+            "TOTAL_TRAVEL_TIME": total_travel_time
+        }
 
     # Calculate the quickest route from the starting station to the next station.
 
@@ -148,17 +157,25 @@ class RoutePlanner:
                 quickest_train_line = current_station.connected_stations[
                     connected_station]["TRAIN_LINE"][quickest_time_index]
 
+                # Add extra minute if station is not start or destination station
+                train_wait_time = 1
+                if current_station.station_name == starting_station_name or current_station.station_name == destination_station_name:
+                    train_wait_time = 0
+
+                travel_time_between_stations = quickest_time + train_wait_time
+
                 if (
                     (current_station_shortest_time is None or self._route_calculator[connected_station]["SHORTEST_TIME"] is None)
                     or
-                    (current_station_shortest_time + quickest_time <
+                    (current_station_shortest_time + travel_time_between_stations <
                      self._route_calculator[connected_station]["SHORTEST_TIME"])
                 ):
                     self._route_calculator[connected_station] = {
-                        'SHORTEST_TIME': current_station_shortest_time + quickest_time,
+                        'SHORTEST_TIME': current_station_shortest_time + travel_time_between_stations,
                         'FROM_STATION': current_station_name,
                         'FROM_TRAIN_LINE': quickest_train_line,
                         'CURRENT_STATION': connected_station,
+                        "TRAVEL_TIME_BETWEEN_STATIONS": travel_time_between_stations
                     }
 
             # Remove current station from remaining stations
