@@ -4,9 +4,19 @@ var stationList = new Bloodhound({
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     remote: {
         url: '/search-station?station=%QUERY',
-        wildcard: '%QUERY'
+        wildcard: '%QUERY',
+        transform(response) {
+            // For each response, if not in list, add to cache.
+            response.forEach(function (item) {
+                if (stationList.valueCache.indexOf(item) === -1) {
+                    stationList.valueCache.push(item);
+                }
+            });
+            return response;
+        }
     }
 });
+stationList.valueCache = [];
 
 // Assign origin and destination fields to be typeahead fields. Point to suggestion engine.
 $('#origin-location, #destination-location').typeahead({
@@ -28,6 +38,27 @@ $('#origin-location, #destination-location').typeahead({
         ].join('\n'),
         suggestion: function (data) {
             return '<p>' + data + '</p>';
+        }
+    }
+}).bind('change blur', function () {
+    // On field change, if value is not in the cached list, clear and warn.
+    if (stationList.valueCache.indexOf($(this).val()) === -1) {
+        // Add text danger to the applicable title - parent seems to not be working as expected.
+        if ($(this).attr('id') == "origin-location") {
+            $('.from-title').addClass('text-danger');
+        } else {
+            $('.to-title').addClass('text-danger');
+        }
+
+        // Clear value
+        $('#' + $(this).attr('id')).val('')
+    }
+    else {
+        // Else, clear warning and accept input.
+        if ($(this).attr('id') == "origin-location") {
+            $('.from-title').removeClass('text-danger');
+        } else {
+            $('.to-title').removeClass('text-danger');
         }
     }
 });
@@ -69,13 +100,11 @@ $('#selection-submit-button').click(function () {
                         `
                     );
 
-                    console.log('--'.concat(route['TRAIN_LINE'].toLowerCase()))
-
                     locations.push(
                         {
                             lat: route['FROM']['STATION_LAT'],
                             lng: route['FROM']['STATION_LNG'],
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--'.concat(route['TRAIN_LINE'].toLowerCase(), '-line'))
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--'.concat(route['TRAIN_LINE'].toLowerCase().split(" ")[0], '-line'))
                         }
                     )
 
@@ -480,5 +509,9 @@ $('#selection-submit-button').click(function () {
     } else {
         // Nicely handle error here.
     }
+
+
+
+    $("#origin-location, #destination-location").val('');
 });
 
