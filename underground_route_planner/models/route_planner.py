@@ -36,55 +36,57 @@ class RoutePlanner:
                 "FROM_TRAIN_LINE": None,
                 "CURRENT_STATION": None
             }
-    
+
     # Returns the route stored in route_calculator as a list of objects to be used by the front end
     def _get_formatted_route(self, starting_station_name: str, destination_station_name: str) -> list:
         route = []
         next_station = self._route_calculator[destination_station_name]
         prev_train_line = ""
         total_travel_time = 0
-        
-        
+
         while next_station["CURRENT_STATION"] != starting_station_name:
-            
-            from_station_node = self._station_handler.get_station_node_by_name(next_station["FROM_STATION"])
-            to_station_node = self._station_handler.get_station_node_by_name(next_station["CURRENT_STATION"])
+            from_station_node = self._station_handler.get_station_node_by_name(
+                next_station["FROM_STATION"]
+            )
+            to_station_node = self._station_handler.get_station_node_by_name(
+                next_station["CURRENT_STATION"]
+            )
             station_change = False
-            
+
             if next_station["FROM_TRAIN_LINE"] != prev_train_line:
                 prev_train_line = next_station["FROM_TRAIN_LINE"]
                 station_change = True
-            
+
             route.append({
                 "FROM": {
                     "STATION_NAME": next_station["FROM_STATION"],
-                    "STATION_LAT":from_station_node.geolocation_coordinates[0],
-                    "STATION_LNG": from_station_node.geolocation_coordinates[1]
+                    "STATION_LNG": from_station_node.geolocation_coordinates[0],
+                    "STATION_LAT": from_station_node.geolocation_coordinates[1]
                 },
                 "TO": {
                     "STATION_NAME": next_station["CURRENT_STATION"],
-                    "STATION_LAT":to_station_node.geolocation_coordinates[0],
-                    "STATION_LNG": to_station_node.geolocation_coordinates[1]
+                    "STATION_LNG": to_station_node.geolocation_coordinates[0],
+                    "STATION_LAT": to_station_node.geolocation_coordinates[1]
                 },
                 "TRAIN_LINE": next_station["FROM_TRAIN_LINE"],
                 "CHANGE_LINE": station_change,
                 "TRAVEL_TIME": next_station["TRAVEL_TIME_BETWEEN_STATIONS"]
             })
-            
+
             route = route[::-1]
-            
+
             # Update total travel time
             total_travel_time += next_station["TRAVEL_TIME_BETWEEN_STATIONS"]
-            
+
             next_station = self._route_calculator[next_station["FROM_STATION"]]
-        
+
         return {
             "ROUTE": route,
             "TOTAL_TRAVEL_TIME": total_travel_time
         }
-        
 
     # Calculate the quickest route from the starting station to the next station.
+
     def get_route(self, starting_station_name: str, destination_station_name: str) -> list:
         # Clear previously calculated route
         self._initalise_route_calculator()
@@ -154,14 +156,14 @@ class RoutePlanner:
 
                 quickest_train_line = current_station.connected_stations[
                     connected_station]["TRAIN_LINE"][quickest_time_index]
-                
+
                 # Add extra minute if station is not start or destination station
                 train_wait_time = 1
                 if current_station.station_name == starting_station_name or current_station.station_name == destination_station_name:
                     train_wait_time = 0
-                
+
                 travel_time_between_stations = quickest_time + train_wait_time
-                
+
                 if (
                     (current_station_shortest_time is None or self._route_calculator[connected_station]["SHORTEST_TIME"] is None)
                     or

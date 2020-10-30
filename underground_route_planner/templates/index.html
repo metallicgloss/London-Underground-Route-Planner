@@ -18,11 +18,11 @@
         <div class="selection-box">
             <div class="row">
                 <div class="col-lg-3">
-                    <p class="selection-title">From</p>
+                    <p class="selection-title from-title">From</p>
                     <input type="text" name="origin-location" id="origin-location" placeholder="Origin Location" />
                 </div>
                 <div class="col-lg-3">
-                    <p class="selection-title">To</p>
+                    <p class="selection-title to-title">To</p>
                     <input type="text" name="destination-location" id="destination-location" placeholder="Destination Location" />
                 </div>
                 <div class="col-lg-2">
@@ -51,32 +51,7 @@
                                         <th scope="col">Total Travel Time</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Station One</td>
-                                        <td class="bakerloo">Bakerloo Line</td>
-                                        <td>0 mins</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Station Two</td>
-                                        <td class="metropolitan">Metropolitan Line</td>
-                                        <td>3 mins <small>(+3 mins)</small></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Station Three</td>
-                                        <td class="district">District Line</td>
-                                        <td>6 mins <small>(+3 mins)</small></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Station Four</td>
-                                        <td class="district">District Line</td>
-                                        <td>10 mins <small>(+4 mins)</small></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Station Five</td>
-                                        <td>-</td>
-                                        <td>12 mins <small>(+2 mins)</small></td>
-                                    </tr>
+                                <tbody id="route-table">
                                 </tbody>
                             </table>
                         </div>
@@ -87,14 +62,15 @@
                                 <p>Journey Summary</p>
                             </div>
                             <ol>
-                                <li>Station One to Station Two - <span class="bakerloo">Bakerloo Line</span></li>
-                                <li>Change from the <span class="bakerloo">Bakerloo Line</span> to the <span class="metropolitan">Metropolitan Line</span></li>
-                                <li>Station Two to Station Three - <span class="metropolitan">Metropolitan Line</span>
-                                </li>
-                                <li>Change from the <span class="metropolitan">Metropolitan Line</span> to the <span class="district">District Line</span></li>
-                                <li>Station Three to Station Five - <span class="district">District Line</span></li>
+                                <!--
+                                    <li>Station One to Station Two - <span class="bakerloo">Bakerloo Line</span></li>
+                                    <li>Change from the <span class="bakerloo">Bakerloo Line</span> to the <span class="metropolitan">Metropolitan Line</span></li>
+                                    <li>Station Two to Station Three - <span class="metropolitan">Metropolitan Line</span></li>
+                                    <li>Change from the <span class="metropolitan">Metropolitan Line</span> to the <span class="district">District Line</span></li>
+                                    <li>Station Three to Station Five - <span class="district">District Line</span></li>
+                                -->
                             </ol>
-                            <p><strong>Total Travel Time:</strong> 14 Minutes</p>
+                            <p><strong>Total Travel Time:</strong> <span id="total-travel-time"></span> Minutes</p>
                         </div>
                     </div>
                     <div class="col-lg-5">
