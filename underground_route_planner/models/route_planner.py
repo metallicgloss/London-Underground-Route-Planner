@@ -1,4 +1,4 @@
-from .station_handler import StationHandler
+from station_handler import StationHandler
 
 # --------------------------------------------------------------------------- #
 #                                  CONTENTS                                   #
@@ -42,11 +42,20 @@ class RoutePlanner:
         route = []
         next_station = self._route_calculator[destination_station_name]
         prev_train_line = ""
+        total_travel_time = 0
+        
         while next_station["CURRENT_STATION"] != starting_station_name:
             
             from_station_node = self._station_handler.get_station_node_by_name(next_station["FROM_STATION"])
             to_station_node = self._station_handler.get_station_node_by_name(next_station["CURRENT_STATION"])
             station_change = False
+            travel_time_between_stations = 0
+            
+            # Find travel time between stations, check both stations to determine which station the time was recorded
+            if next_station["CURRENT_STATION"] in from_station_node.connected_stations.keys():
+                travel_time_between_stations = from_station_node.connected_stations[next_station["CURRENT_STATION"]]["TIME_TO"][0]
+            elif next_station["FROM_STATION"] in to_station_node.connected_stations.keys():
+                travel_time_between_stations = to_station_node.connected_stations[next_station["FROM_STATION"]]["TIME_TO"][0]
             
             if next_station["FROM_TRAIN_LINE"] != prev_train_line:
                 prev_train_line = next_station["FROM_TRAIN_LINE"]
@@ -55,22 +64,30 @@ class RoutePlanner:
             route.append({
                 "FROM": {
                     "STATION_NAME": next_station["FROM_STATION"],
-                    "STATION_NAME_FORMATTED": next_station["FROM_STATION"] + " Underground Station, London",
                     "STATION_LAT":from_station_node.geolocation_coordinates[0],
                     "STATION_LNG": from_station_node.geolocation_coordinates[1]
                 },
                 "TO": {
                     "STATION_NAME": next_station["CURRENT_STATION"],
-                    "STATION_NAME_FORMATTED": next_station["CURRENT_STATION"] + " Underground Station, London",
                     "STATION_LAT":to_station_node.geolocation_coordinates[0],
                     "STATION_LNG": to_station_node.geolocation_coordinates[1]
                 },
                 "TRAIN_LINE": next_station["FROM_TRAIN_LINE"],
-                "CHANGE_LINE": station_change
+                "CHANGE_LINE": station_change,
+                "TRAVEL_TIME": travel_time_between_stations
             })
+            
+            route = route[::-1]
+            
+            # Update total travel time
+            total_travel_time += travel_time_between_stations
+            
             next_station = self._route_calculator[next_station["FROM_STATION"]]
         
-        return route[::-1]
+        return {
+            "ROUTE": route,
+            "TOTAL_TRAVEL_TIME": total_travel_time
+        }
         
 
     # Calculate the quickest route from the starting station to the next station.
@@ -161,3 +178,53 @@ class RoutePlanner:
             remaining_stations.remove(current_station_name)
 
         return self._get_formatted_route(starting_station_name, destination_station_name)
+
+if __name__ == "__main__":
+    S = StationHandler()
+
+    S.add_station_alphabetically("A")
+    S.add_station_alphabetically("B")
+    S.add_station_alphabetically("C")
+    S.add_station_alphabetically("D")
+    S.add_station_alphabetically("E")
+
+    # Add connections from A
+    S.get_station_node_by_name("A").add_station_connection(
+        S.get_station_node_by_name("C"), 3, "RED")
+    S.get_station_node_by_name("A").geolocation_coordinates = [1, 1]
+
+    S.get_station_node_by_name("A").add_station_connection(
+        S.get_station_node_by_name("D"), 4, "RED")
+
+    S.get_station_node_by_name("A").add_station_connection(
+        S.get_station_node_by_name("D"), 5, "BLUE")
+
+    # Add connections from B
+    S.get_station_node_by_name("B").add_station_connection(
+        S.get_station_node_by_name("E"), 3, "BLUE")
+    S.get_station_node_by_name("B").geolocation_coordinates = [2, 2]
+
+    # Add connections from C
+    S.get_station_node_by_name("C").add_station_connection(
+        S.get_station_node_by_name("D"), 2, "BLUE")
+    S.get_station_node_by_name("C").geolocation_coordinates = [3, 3]
+
+    S.get_station_node_by_name("C").add_station_connection(
+        S.get_station_node_by_name("B"), 14, "RED")
+
+    S.get_station_node_by_name("C").add_station_connection(
+        S.get_station_node_by_name("B"), 7, "BLUE")
+
+    # Add connections from D
+    S.get_station_node_by_name("D").add_station_connection(
+        S.get_station_node_by_name("E"), 2, "RED")
+    S.get_station_node_by_name("D").geolocation_coordinates = [4, 4]
+
+    # Add connectiond from E
+    S.get_station_node_by_name("E").geolocation_coordinates = [5, 5]
+    # There is None
+    R = RoutePlanner(S)
+    a = R.get_route("E", "A")
+    for i in a["ROUTE"]:
+        print(i)
+    print("TOTAL_TRAVEL_TIME" + str(a["TOTAL_TRAVEL_TIME"])) 
