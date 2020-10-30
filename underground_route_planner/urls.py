@@ -6,4 +6,5 @@ urlpatterns = [
     path('licences', views.licences, name='licences'),
     path('userguide', views.userguide, name='userguide'),
     path('search-station', views.station_search, name='search-station'),
+    path('search-route', views.route_search, name='search-route'),
 ]
