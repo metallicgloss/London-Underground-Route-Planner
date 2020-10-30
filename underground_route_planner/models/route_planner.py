@@ -143,15 +143,20 @@ class RoutePlanner:
 
                 quickest_train_line = current_station.connected_stations[
                     connected_station]["TRAIN_LINE"][quickest_time_index]
-
+                
+                # Add extra minute if station is not start or destination station
+                train_wait_time = 1
+                if current_station.station_name == starting_station_name or current_station.station_name == destination_station_name:
+                    train_wait_time = 0
+                
                 if (
                     (current_station_shortest_time is None or self._route_calculator[connected_station]["SHORTEST_TIME"] is None)
                     or
-                    (current_station_shortest_time + quickest_time <
+                    (current_station_shortest_time + quickest_time + train_wait_time <
                      self._route_calculator[connected_station]["SHORTEST_TIME"])
                 ):
                     self._route_calculator[connected_station] = {
-                        'SHORTEST_TIME': current_station_shortest_time + quickest_time,
+                        'SHORTEST_TIME': current_station_shortest_time + quickest_time + train_wait_time,
                         'FROM_STATION': current_station_name,
                         'FROM_TRAIN_LINE': quickest_train_line,
                         'CURRENT_STATION': connected_station,
