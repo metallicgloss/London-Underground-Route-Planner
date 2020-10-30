@@ -1,4 +1,4 @@
-from station_handler import StationHandler
+from .station_handler import StationHandler
 
 # --------------------------------------------------------------------------- #
 #                                  CONTENTS                                   #
@@ -74,13 +74,13 @@ class RoutePlanner:
                 },
                 "TRAIN_LINE": next_station["FROM_TRAIN_LINE"],
                 "CHANGE_LINE": station_change,
-                "TRAVEL_TIME": travel_time_between_stations
+                "TRAVEL_TIME": next_station["TRAVEL_TIME_BETWEEN_STATIONS"]
             })
             
             route = route[::-1]
             
             # Update total travel time
-            total_travel_time += travel_time_between_stations
+            total_travel_time += next_station["TRAVEL_TIME_BETWEEN_STATIONS"]
             
             next_station = self._route_calculator[next_station["FROM_STATION"]]
         
@@ -166,17 +166,20 @@ class RoutePlanner:
                 if current_station.station_name == starting_station_name or current_station.station_name == destination_station_name:
                     train_wait_time = 0
                 
+                travel_time_between_stations = quickest_time + train_wait_time
+                
                 if (
                     (current_station_shortest_time is None or self._route_calculator[connected_station]["SHORTEST_TIME"] is None)
                     or
-                    (current_station_shortest_time + quickest_time + train_wait_time <
+                    (current_station_shortest_time + travel_time_between_stations <
                      self._route_calculator[connected_station]["SHORTEST_TIME"])
                 ):
                     self._route_calculator[connected_station] = {
-                        'SHORTEST_TIME': current_station_shortest_time + quickest_time + train_wait_time,
+                        'SHORTEST_TIME': current_station_shortest_time + travel_time_between_stations,
                         'FROM_STATION': current_station_name,
                         'FROM_TRAIN_LINE': quickest_train_line,
                         'CURRENT_STATION': connected_station,
+                        "TRAVEL_TIME_BETWEEN_STATIONS": travel_time_between_stations
                     }
 
             # Remove current station from remaining stations
