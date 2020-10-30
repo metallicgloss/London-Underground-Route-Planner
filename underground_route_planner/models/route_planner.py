@@ -44,18 +44,12 @@ class RoutePlanner:
         prev_train_line = ""
         total_travel_time = 0
         
+        
         while next_station["CURRENT_STATION"] != starting_station_name:
             
             from_station_node = self._station_handler.get_station_node_by_name(next_station["FROM_STATION"])
             to_station_node = self._station_handler.get_station_node_by_name(next_station["CURRENT_STATION"])
             station_change = False
-            travel_time_between_stations = 0
-            
-            # Find travel time between stations, check both stations to determine which station the time was recorded
-            if next_station["CURRENT_STATION"] in from_station_node.connected_stations.keys():
-                travel_time_between_stations = from_station_node.connected_stations[next_station["CURRENT_STATION"]]["TIME_TO"][0]
-            elif next_station["FROM_STATION"] in to_station_node.connected_stations.keys():
-                travel_time_between_stations = to_station_node.connected_stations[next_station["FROM_STATION"]]["TIME_TO"][0]
             
             if next_station["FROM_TRAIN_LINE"] != prev_train_line:
                 prev_train_line = next_station["FROM_TRAIN_LINE"]
