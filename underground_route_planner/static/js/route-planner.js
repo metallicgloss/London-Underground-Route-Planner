@@ -70,15 +70,13 @@ $('#selection-submit-button').click(function () {
     // If existing search performed, reset.
     if (existingSearch == true) {
         $("#route-table").empty();
+        $("#summary-block").empty();
     }
 
     // If both search fields are not blank.
     if ([$('#origin-location').val(), $('#destination-location').val()].every(function (i) { return i !== ""; })) {
         existingSearch = true;
         var locations = [];
-        var stations = 0;
-        var timeToStaton = 0;
-        var subTotalTime = 0;
 
         // Execute ajax call to get route data.
         $.ajax({
@@ -88,63 +86,17 @@ $('#selection-submit-button').click(function () {
                 "destination_location": $('#destination-location').val()
             },
             success: function (response) {
-                stations = Object.keys(response['ROUTE']).length;
-
-                // For each route in response.
-                $.each(response['ROUTE'], function (i, route) {
-                    // Get the time taken to get to station from last route.
-                    if (i != 0) {
-                        // If not the first station, set time to station from previous route.
-                        timeToStaton = response['ROUTE'][i - 1]['TRAVEL_TIME']
-                    }
-
-                    // Append the from station to the table with the time taken to get to it from the previous.
-                    $('#route-table').append(
-                        `
-                        <tr>
-                            <td>${route['FROM']['STATION_NAME']}</td>
-                            <td class="${route['TRAIN_LINE'].toLowerCase()}">${route['TRAIN_LINE']} Line</td>
-                            <td>${subTotalTime} mins <small>(+${timeToStaton} mins)</small></td>
-                        </tr>
-                        `
-                    );
-
-                    // Add pathway to locations for mapping.
-                    locations.push(
-                        {
-                            lat: route['FROM']['STATION_LAT'],
-                            lng: route['FROM']['STATION_LNG'],
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--'.concat(route['TRAIN_LINE'].toLowerCase().split(" ")[0], '-line'))
-                        }
-                    )
-
-                    // Add travel time from previous station to running total.
-                    subTotalTime += route['TRAVEL_TIME']
-
-                    // If last route in the list.
-                    if (stations == (i + 1)) {
-                        $('#route-table tr:last').after(
-                            `
-                            <tr>
-                                <td>${route['TO']['STATION_NAME']}</td>
-                                <td>-</td>
-                                <td>${subTotalTime} mins  <small>(+${route['TRAVEL_TIME']} mins)</small></td>
-                            </tr>
-                        `
-                        );
-                    }
-
-                });
-
-                console.log(response['TOTAL_TRAVEL_TIME'])
-                $('#total-travel-time').html(response['TOTAL_TRAVEL_TIME'])
+                // Export data to table, summary and total box.
+                $('#route-table').append(response['TABLE_OUTPUT'])
+                $('#summary-block').append(response['SUMMARY_OUTPUT'])
+                $('#total-travel-time').html(response['RAW_DATA']['TOTAL_TRAVEL_TIME'])
 
                 // Expand route box.
                 $('.selection-box').addClass('selection-box-large');
                 $('.route-selection').show();
 
                 // Set map object to correct height based on number of stations in the route.
-                $('#map-object').height(((stations - 1) * 42) + 100)
+                $('#map-object').height(((Object.keys(response['RAW_DATA']['ROUTE']).length - 1) * 42) + 100)
 
                 // Create styled map with center in the middle of London
                 const map = new google.maps.Map(document.getElementById("map-object"), {
@@ -496,6 +448,9 @@ $('#selection-submit-button').click(function () {
                     ]
                 });
 
+                // Define locations.
+                locations = response['LOCATION_DATA']
+
                 // Draw lines between each station with their corresponding tube line colour.
                 // Not using Google direction service to have more control over the colours; also, direction service doesnt allow waypoints / stops when using train as transport.
                 locations.forEach(function (value, i) {
@@ -503,15 +458,15 @@ $('#selection-submit-button').click(function () {
                     if (typeof locations[i + 1] !== 'undefined') {
                         // Parse polygon shape using the current station and the next station.
                         var selectedPolygon = [
-                            { lat: locations[i]['lat'], lng: locations[i]['lng'] },
-                            { lat: locations[i + 1]['lat'], lng: locations[i + 1]['lng'] },
+                            { lat: locations[i]['LATITUDE'], lng: locations[i]['LONGITUDE'] },
+                            { lat: locations[i + 1]['LATITUDE'], lng: locations[i + 1]['LONGITUDE'] },
                         ]
 
                         // Create a new polyline with the data.
                         const selectedJourney = new google.maps.Polyline({
                             path: selectedPolygon,
                             geodesic: true,
-                            strokeColor: locations[i]['color'],
+                            strokeColor: getComputedStyle(document.documentElement).getPropertyValue(locations[i]['CSS_COLOR_VARIABLE']),
                             strokeOpacity: 1.0,
                             strokeWeight: 4,
                             map: map
@@ -527,8 +482,7 @@ $('#selection-submit-button').click(function () {
         // Nicely handle error here.
     }
 
-
-
+    // Clear input boxes to allow for immediate new route.
     $("#origin-location, #destination-location").val('');
 });
 
