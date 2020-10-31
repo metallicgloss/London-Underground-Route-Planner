@@ -70,6 +70,7 @@ $('#selection-submit-button').click(function () {
     // If existing search performed, reset.
     if (existingSearch == true) {
         $("#route-table").empty();
+        $("#summary-block").empty();
     }
 
     // If both search fields are not blank.
@@ -85,6 +86,7 @@ $('#selection-submit-button').click(function () {
                 "destination_location": $('#destination-location').val()
             },
             success: function (response) {
+                // Export data to table, summary and total box.
                 $('#route-table').append(response['TABLE_OUTPUT'])
                 $('#summary-block').append(response['SUMMARY_OUTPUT'])
                 $('#total-travel-time').html(response['RAW_DATA']['TOTAL_TRAVEL_TIME'])
@@ -480,6 +482,7 @@ $('#selection-submit-button').click(function () {
         // Nicely handle error here.
     }
 
+    // Clear input boxes to allow for immediate new route.
     $("#origin-location, #destination-location").val('');
 });
 
