@@ -76,13 +76,72 @@ class RoutePlanner:
             # Update total travel time
             total_travel_time += next_station["TRAVEL_TIME_BETWEEN_STATIONS"]
 
+            # Fix route order and determine if train line changes occurred
+            route_in_order = route[::-1]
+
+            # Set inital train line
+            prev_train_line = route_in_order[0]["TRAIN_LINE"]
+            route_in_order[0]["CHANGE_LINE"] = False
+
+            for route_node in route_in_order[1:]:
+                station_change = route_node["TRAIN_LINE"] != prev_train_line
+                prev_train_line = route_node["TRAIN_LINE"]
+                route_node["CHANGE_LINE"] = station_change
+
+            # Set the next station on the route.
             next_station = self._route_calculator[next_station["FROM_STATION"]]
 
         return {
-            "ROUTE": route[::-1],
+            "ROUTE": route_in_order,
             "TOTAL_TRAVEL_TIME": total_travel_time
         }
 
+    # Return the route segment formatted for HTML list.
+    def get_formatted_html_route(self, station_name: str, underground_line: str, travel_time: int, total_travel_time: int) -> str:
+        return (
+            "<tr><td>"
+            + station_name
+            + "</td><td class = '"
+            + underground_line.lower()
+            + "'>"
+            + underground_line
+            + "</td><td>"
+            + str(total_travel_time)
+            + " mins <small>(+"
+            + str(travel_time)
+            + " mins)</small></td></tr>"
+        )
+
+    # Return the route segment formatted for HTML summary.
+    def get_formatted_html_summary(self, origin_station: str, destination_station: str, underground_line: str) -> str:
+        return (
+            "<li>"
+            + origin_station
+            + " Station to "
+            + destination_station
+            + " Station - <span class='"
+            + underground_line.lower().split(" ", 1)[0]
+            + "'>"
+            + underground_line
+            + " Line </span> </li>"
+        )
+
+    # Return the route segment formatted for HTML summary.
+
+    def get_formatted_html_change_summary(self, station_name: str, from_line: str, to_line: str) -> str:
+        return (
+            "<li>Change at "
+            + station_name
+            + " from the <span class='"
+            + from_line.lower().split(" ", 1)[0]
+            + "'>"
+            + from_line
+            + " Line </span> to the <span class='"
+            + to_line.lower().split(" ", 1)[0]
+            + "'>"
+            + to_line
+            + " Line</span></li>"
+        )
     # Calculate the quickest route from the starting station to the next station.
 
     def get_route(self, starting_station_name: str, destination_station_name: str) -> list:
