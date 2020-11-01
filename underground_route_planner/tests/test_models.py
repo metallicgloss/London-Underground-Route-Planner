@@ -1,7 +1,7 @@
 from django.test import TestCase
 from underground_route_planner.models.station_handler import StationHandler
 from underground_route_planner.models.route_planner import RoutePlanner
-from underground_route_planner.models.geocoding import GeoCoding
+from underground_route_planner.models.geocode_handler import GeoCoding
 
 
 # --------------------------------------------------------------------------- #

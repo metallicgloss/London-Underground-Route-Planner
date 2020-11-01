@@ -8,7 +8,7 @@ underground_route_planner = apps.get_app_config(
 )
 
 # Use the stored station handler and route planner with data that has been initialised on startup.
-handler = underground_route_planner.station_handler
+handler = underground_route_planner.imported_data
 planner = underground_route_planner.route_planner
 
 
