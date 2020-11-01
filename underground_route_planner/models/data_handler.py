@@ -42,7 +42,7 @@ class DataHandler:
             "route_geocoded_data": {},
             "route_speed_multipliers": {
                 "Bakerloo": {
-                    "multiplier": 2,
+                    "multiplier": 0.5,
                     "applied_times": [
                         {
                             "start_time": 9,
