@@ -1,3 +1,4 @@
+from math import ceil
 from .station_handler import StationHandler
 
 # --------------------------------------------------------------------------- #
@@ -19,8 +20,9 @@ class RoutePlanner:
     # ----------------------------------------------------------------------- #
 
     # Initialise the route planner object.
-    def __init__(self, station_handler: StationHandler):
+    def __init__(self, station_handler: StationHandler, route_speed_factors: {}):
         self._station_handler = station_handler
+        self._route_speed_factors = route_speed_factors
         self._route_calculator = {}
 
     # Initiaise the calculator, reset values, add all names to the calculator.
@@ -34,7 +36,9 @@ class RoutePlanner:
                 "SHORTEST_TIME": None,
                 "FROM_STATION": None,
                 "FROM_TRAIN_LINE": None,
-                "CURRENT_STATION": None
+                "CURRENT_STATION": None,
+                "TRAVEL_TIME_BETWEEN_STATIONS": None,
+                "TIME_REACHED_STATION": None
             }
 
     # Returns the route stored in route_calculator as a list of objects to be used by the front end
@@ -144,10 +148,21 @@ class RoutePlanner:
         )
     # Calculate the quickest route from the starting station to the next station.
 
-    def get_route(self, starting_station_name: str, destination_station_name: str) -> list:
+    def get_route(self, starting_station_name: str, destination_station_name: str, journey_start_time_24h_minutes: int) -> list:
+
+        # Checks if the journey time should be altered to due changes made in the configuration
+        def check_route_speed_factor_should_apply(current_time_in_minutes: int, train_line: str) -> bool:
+            conditon_met = False
+            if train_line in self._route_speed_factors:
+                for time_intervals in self._route_speed_factors[train_line]["applied_times"]:
+                    start_time_in_minutes = time_intervals["start_time"] * 60
+                    end_time_in_minutes = time_intervals["end_time"] * 60
+                    if current_time_in_minutes >= start_time_in_minutes and current_time_in_minutes <= end_time_in_minutes:
+                        conditon_met = True
+            return conditon_met
+
         # Clear previously calculated route
         self._initalise_route_calculator()
-
         # Get list of unvisited stations
         remaining_stations = self._station_handler.get_all_station_names()
 
@@ -158,6 +173,9 @@ class RoutePlanner:
         # Set starting point time to 0
         self._route_calculator[starting_station_name]["SHORTEST_TIME"] = 0
         self._route_calculator[starting_station_name]["CURRENT_STATION"] = starting_station_name
+
+        current_time_in_minutes = journey_start_time_24h_minutes
+        self._route_calculator[starting_station_name]["TIME_REACHED_STATION"] = current_time_in_minutes
 
         # Calculate Dijkstra table
         while len(remaining_stations) != 0:
@@ -200,6 +218,10 @@ class RoutePlanner:
                 current_station_name
             ]["SHORTEST_TIME"]
 
+            current_time_in_minutes = self._route_calculator[
+                current_station_name]["TIME_REACHED_STATION"]
+
+            # Cycle through all stations connected to current station
             for connected_station in current_station.connected_stations:
                 # Get quickest connection to specific node
                 quickest_time_index = current_station.connected_stations[connected_station]["TIME_TO"].index(
@@ -219,7 +241,15 @@ class RoutePlanner:
                 if current_station.station_name == starting_station_name or current_station.station_name == destination_station_name:
                     train_wait_time = 0
 
-                travel_time_between_stations = quickest_time + train_wait_time
+                travel_time_between_stations = 0  # Created just for initalisation purposes
+
+                # Determine if route_speed factor should apply
+                if check_route_speed_factor_should_apply(current_time_in_minutes, quickest_train_line):
+                    speed_factor = self._route_speed_factors[quickest_train_line]["multiplier"]
+                    travel_time_between_stations = ceil(
+                        quickest_time * speed_factor) + train_wait_time
+                else:
+                    travel_time_between_stations = quickest_time + train_wait_time
 
                 if (
                     (current_station_shortest_time is None or self._route_calculator[connected_station]["SHORTEST_TIME"] is None)
@@ -232,7 +262,8 @@ class RoutePlanner:
                         'FROM_STATION': current_station_name,
                         'FROM_TRAIN_LINE': quickest_train_line,
                         'CURRENT_STATION': connected_station,
-                        "TRAVEL_TIME_BETWEEN_STATIONS": travel_time_between_stations
+                        "TRAVEL_TIME_BETWEEN_STATIONS": travel_time_between_stations,
+                        "TIME_REACHED_STATION": current_time_in_minutes + travel_time_between_stations
                     }
 
             # Remove current station from remaining stations
