@@ -38,7 +38,7 @@ class DataHandler:
         # Define default configuration.
         base_configuration = {
             "route_data_file": "London Underground Data.xlsx",
-            "route_geocoding": True,
+            "route_geocoding": False,
             "route_geocoded_data": {},
             "route_speed_multipliers": {
                 "bakerloo": {
