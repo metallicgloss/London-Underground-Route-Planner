@@ -2,6 +2,7 @@
 ######    Custom Rules    ######
 ################################
 geocoded_data.json
+route_planner_configuration.json
 
 ################################
 ######    VSCode Rules    ######
