@@ -41,11 +41,17 @@ class DataHandler:
             "route_geocoding": False,
             "route_geocoded_data": {},
             "route_speed_multipliers": {
-                "bakerloo": {
+                "Bakerloo": {
                     "multiplier": 2,
                     "applied_times": [
-                        [9, 16],
-                        [19, 0]
+                        {
+                            "start_time": 9,
+                            "end_time": 16
+                        },
+                        {
+                            "start_time": 19,
+                            "end_time": 0
+                        }
                     ]
                 }
             },
@@ -78,6 +84,10 @@ class DataHandler:
         else:
             # Configuration file does not exist, initialise with basic data structure.
             self._software_configuration = self._initialise_configuration_file()
+
+    # Fetch the speed factors from the configuration file.
+    def fetch_route_speed_factors(self):
+        return self._software_configuration['route_speed_multipliers']
 
     # Import provided station data.
     def import_station_data(self):
@@ -227,3 +237,7 @@ class DataHandler:
 
         # Complete
         print("[DONE]")
+
+    @property
+    def route_speed_multipliers(self) -> dict:
+        return self._software_configuration["route_speed_multipliers"]

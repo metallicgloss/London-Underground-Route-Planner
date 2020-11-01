@@ -27,4 +27,7 @@ class UndergroundRoutePlannerConfig(AppConfig):
         self.imported_data = self.data_handler.import_station_data()
 
         # Initialise Route Planner Object
-        self.route_planner = RoutePlanner(self.imported_data)
+        self.route_planner = RoutePlanner(
+            self.imported_data,
+            self.data_handler.fetch_route_speed_factors()
+        )
