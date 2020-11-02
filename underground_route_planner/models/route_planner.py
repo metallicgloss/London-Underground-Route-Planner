@@ -244,9 +244,10 @@ class RoutePlanner:
 
                 # Determine if route_speed factor should apply
                 if check_route_speed_factor_should_apply(current_time_in_minutes, quickest_train_line):
-                    speed_factor = self._route_speed_factors[quickest_train_line]["multiplier"]
+                    speed_factor = self._route_speed_factors[quickest_train_line]["factor"]
                     travel_time_between_stations = ceil(
-                        quickest_time * speed_factor) + train_wait_time
+                        quickest_time * speed_factor
+                    ) + train_wait_time
                 else:
                     travel_time_between_stations = quickest_time + train_wait_time
 
