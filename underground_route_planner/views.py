@@ -122,7 +122,9 @@ def route_search(request):
             formatted_route_data['TABLE_OUTPUT'] += planner.get_formatted_html_route(
                 route['TO']['STATION_NAME'],
                 "-",
-                time_to_station,
+                route_data['ROUTE'][
+                    route_index
+                ]['TRAVEL_TIME'],
                 sub_total_time
             )
 
