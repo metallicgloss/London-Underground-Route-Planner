@@ -146,10 +146,9 @@ class RoutePlanner:
             + to_line
             + " Line</span></li>"
         )
+
     # Calculate the quickest route from the starting station to the next station.
-
     def get_route(self, starting_station_name: str, destination_station_name: str, journey_start_time_24h_minutes: int) -> list:
-
         # Checks if the journey time should be altered to due changes made in the configuration
         def check_route_speed_factor_should_apply(current_time_in_minutes: int, train_line: str) -> bool:
             conditon_met = False
