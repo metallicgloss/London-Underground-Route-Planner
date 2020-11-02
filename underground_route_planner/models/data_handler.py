@@ -40,12 +40,18 @@ class DataHandler:
             "route_data_file": "London Underground Data.xlsx",
             "route_geocoding": False,
             "route_geocoded_data": {},
-            "route_speed_multipliers": {
-                "bakerloo": {
-                    "multiplier": 2,
+            "route_speed_factors": {
+                "Bakerloo": {
+                    "factor": 0.5,
                     "applied_times": [
-                        [9, 16],
-                        [19, 0]
+                        {
+                            "start_time": 9,
+                            "end_time": 16
+                        },
+                        {
+                            "start_time": 19,
+                            "end_time": 0
+                        }
                     ]
                 }
             },
@@ -78,6 +84,10 @@ class DataHandler:
         else:
             # Configuration file does not exist, initialise with basic data structure.
             self._software_configuration = self._initialise_configuration_file()
+
+    # Fetch the speed factors from the configuration file.
+    def fetch_route_speed_factors(self):
+        return self._software_configuration['route_speed_factors']
 
     # Import provided station data.
     def import_station_data(self):
@@ -227,3 +237,7 @@ class DataHandler:
 
         # Complete
         print("[DONE]")
+
+    @property
+    def route_speed_factors(self) -> dict:
+        return self._software_configuration["route_speed_factors"]

@@ -69,7 +69,7 @@ var existingSearch = false;
 $('#selection-submit-button').click(function () {
 
     // If both search fields are not blank.
-    if ([$('#origin-location').val(), $('#destination-location').val()].every(function (i) { return i !== ""; })) {
+    if ([$('#origin-location').val(), $('#destination-location').val(), $('#start-time').val()].every(function (i) { return i !== ""; })) {
         // If existing search performed, reset.
         if (existingSearch == true) {
             $("#route-table").empty();
@@ -84,7 +84,8 @@ $('#selection-submit-button').click(function () {
             url: "search-route",
             data: {
                 "origin_location": $('#origin-location').val(),
-                "destination_location": $('#destination-location').val()
+                "destination_location": $('#destination-location').val(),
+                "start_time": $('#start-time').val()
             },
             success: function (response) {
                 // Export data to table, summary and total box.
@@ -490,6 +491,5 @@ $('#selection-submit-button').click(function () {
     }
 
     // Clear input boxes to allow for immediate new route.
-    $("#origin-location, #destination-location").val('');
+    $("#origin-location, #destination-location, #start-time").val('');
 });
-
