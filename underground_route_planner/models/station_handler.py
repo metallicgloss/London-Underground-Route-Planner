@@ -50,29 +50,29 @@ class StationHandler:
 
             if station_name in self._connected_stations.keys():
                 # Check connection does not already exist
-                if self._connected_stations[station_name]["TRAIN_LINE"] == train_line and \
-                        self._connected_stations[station_name]["STATION_NODE"] == station_node:
+                if self._connected_stations[station_name]["train_line"] == train_line and \
+                        self._connected_stations[station_name]["station_node"] == station_node:
                     # Connection already exists.
                     raise Exception(
                         "Attempted to create a duplicate connection.")
                 else:
                     # Append new values to connections - append rather than set to enable multiple connections from a single station.
-                    self._connected_stations[station_name]["TIME_TO"].append(
+                    self._connected_stations[station_name]["time_to"].append(
                         time_taken
                     )
-                    self._connected_stations[station_name]["TRAIN_LINE"].append(
+                    self._connected_stations[station_name]["train_line"].append(
                         train_line
                     )
-                    self._connected_stations[station_name]["STATION_NODE"].append(
+                    self._connected_stations[station_name]["station_node"].append(
                         station_node
                     )
 
             else:
                 # Connection already exists, update data.
                 connected_station_information = {
-                    "TIME_TO": array("i", [time_taken]),
-                    "TRAIN_LINE": [train_line],
-                    "STATION_NODE": [station_node]
+                    "time_to": array("i", [time_taken]),
+                    "train_line": [train_line],
+                    "station_node": [station_node]
                 }
                 self._connected_stations[station_name] = connected_station_information
 

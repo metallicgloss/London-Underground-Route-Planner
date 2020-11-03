@@ -3,10 +3,10 @@ from django.db import models
 
 
 class GeoCoding:
-    def __init__(self):
+    def __init__(self, route_geocoding_api_key):
         # Define internal variable for google map connection.
         self._google_map_connection = googlemaps.Client(
-            key='AIzaSyB2JJaU3ySjHvqyO7a_HGNf3-pS0dZBjo4'
+            key=route_geocoding_api_key
         )
 
     def get_coordinates(self, address_query: str):

@@ -26,35 +26,26 @@ class DataHandler:
     # Initialise the data handler object.
     def __init__(self):
         self._station_handler = StationHandler()
-        self._geocode_handler = GeoCoding()
-        self._new_geocoded_data = False
         self._configuration_file_name = "route_planner_configuration.json"
         self._software_configuration = {}
 
         self._fetch_configuration_file()
 
+        self._geocode_handler = GeoCoding(
+            self._software_configuration['route_geocoding_api_key']
+        )
+        self._new_geocoded_data = False
+
     # Initialise the program configuration file.
+
     def _initialise_configuration_file(self):
         # Define default configuration.
         base_configuration = {
-            "route_data_file": "London Underground Data.xlsx",
+            "route_data_file": "",
             "route_geocoding": False,
+            "route_geocoding_api_key": "",
             "route_geocoded_data": {},
-            "route_speed_factors": {
-                "Bakerloo": {
-                    "factor": 0.5,
-                    "applied_times": [
-                        {
-                            "start_time": 9,
-                            "end_time": 16
-                        },
-                        {
-                            "start_time": 19,
-                            "end_time": 0
-                        }
-                    ]
-                }
-            },
+            "route_speed_factors": {},
         }
 
         with open(self._configuration_file_name, 'w') as configuration_data:
@@ -84,10 +75,6 @@ class DataHandler:
         else:
             # Configuration file does not exist, initialise with basic data structure.
             self._software_configuration = self._initialise_configuration_file()
-
-    # Fetch the speed factors from the configuration file.
-    def fetch_route_speed_factors(self):
-        return self._software_configuration['route_speed_factors']
 
     # Import provided station data.
     def import_station_data(self):
@@ -241,3 +228,7 @@ class DataHandler:
     @property
     def route_speed_factors(self) -> dict:
         return self._software_configuration["route_speed_factors"]
+
+    @property
+    def route_geocoding_status(self) -> bool:
+        return self._software_configuration["route_geocoding"]
