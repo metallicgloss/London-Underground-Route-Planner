@@ -52,8 +52,7 @@ def route_search(request):
     formatted_route_data = {
         'raw_data': route_data,
         'route_table': '',
-        'route_summary': '',
-        'route_locations': []
+        'route_summary': ''
     }
 
     # For each route in the data, build HTML table content to display and location list.
@@ -67,12 +66,12 @@ def route_search(request):
 
         else:
             # First station, set first origin of the line.
-            origin_of_line = route['from']['station_name']
+            origin_of_line = route['from']
             underground_line = route['train_line']
 
         # Create list table entry.
         formatted_route_data['route_table'] += planner.get_formatted_html_route(
-            route['from']['station_name'],
+            route['from'],
             route['train_line'] + " Line",
             time_to_station,
             sub_total_time
@@ -84,13 +83,13 @@ def route_search(request):
             # Create summary list entry.
             formatted_route_data['route_summary'] += planner.get_formatted_html_summary(
                 origin_of_line,
-                route['from']['station_name'],
+                route['from'],
                 underground_line
             )
 
             # Create summary list entry.
             formatted_route_data['route_summary'] += planner.get_formatted_html_change_summary(
-                route['from']['station_name'],
+                route['from'],
                 underground_line,
                 route['train_line']
             )
@@ -101,26 +100,17 @@ def route_search(request):
         # If origin of line blank, this is the first route on the new line.
         if(origin_of_line == ""):
             # Set new origin, set line of the route.
-            origin_of_line = route['from']['station_name']
+            origin_of_line = route['from']
             underground_line = route['train_line']
 
         # Add travel time from previous station to running total.
         sub_total_time += route['travel_time']
 
-        # Add pathway to locations for mapping.
-        formatted_route_data['route_locations'].append(
-            {
-                'longitude': route['from']['station_lng'],
-                'latitude': route['from']['station_lat'],
-                'css_color_variable': "--" + route['train_line'].lower().split(" ", 1)[0] + "-line"
-            }
-        )
-
         # If last route in the list.
         if (len(route_data['route']) == (route_index + 1)):
             # Add destination.
             formatted_route_data['route_table'] += planner.get_formatted_html_route(
-                route['to']['station_name'],
+                route['to'],
                 "-",
                 route_data['route'][
                     route_index
@@ -131,17 +121,8 @@ def route_search(request):
             # Create summary list entry.
             formatted_route_data['route_summary'] += planner.get_formatted_html_summary(
                 origin_of_line,
-                route['to']['station_name'],
+                route['to'],
                 underground_line
-            )
-
-            # Add pathway to locations for mapping.
-            formatted_route_data['route_locations'].append(
-                {
-                    'longitude': route['to']['station_lng'],
-                    'latitude': route['to']['station_lat'],
-                    'css_color_variable': "--" + route['train_line'].lower().split(" ", 1)[0] + "-line"
-                }
             )
 
     return JsonResponse(
