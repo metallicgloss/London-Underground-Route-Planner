@@ -33,12 +33,12 @@ class RoutePlanner:
         # For each station, initialise data structure.
         for station_name in station_names:
             self._route_calculator[station_name] = {
-                "SHORTEST_TIME": None,
-                "FROM_STATION": None,
-                "FROM_TRAIN_LINE": None,
-                "CURRENT_STATION": None,
-                "TRAVEL_TIME_BETWEEN_STATIONS": None,
-                "TIME_REACHED_STATION": None
+                "shortest_time": None,
+                "from_station": None,
+                "from_train_line": None,
+                "current_station": None,
+                "travel_time_between_stations": None,
+                "time_reached_station": None
             }
 
     # Returns the route stored in route_calculator as a list of objects to be used by the front end
@@ -48,56 +48,56 @@ class RoutePlanner:
         prev_train_line = ""
         total_travel_time = 0
 
-        while next_station["CURRENT_STATION"] != starting_station_name:
+        while next_station["current_station"] != starting_station_name:
             from_station_node = self._station_handler.get_station_node_by_name(
-                next_station["FROM_STATION"]
+                next_station["from_station"]
             )
             to_station_node = self._station_handler.get_station_node_by_name(
-                next_station["CURRENT_STATION"]
+                next_station["current_station"]
             )
             station_change = False
 
-            if next_station["FROM_TRAIN_LINE"] != prev_train_line:
-                prev_train_line = next_station["FROM_TRAIN_LINE"]
+            if next_station["from_train_line"] != prev_train_line:
+                prev_train_line = next_station["from_train_line"]
                 station_change = True
 
             route.append({
-                "FROM": {
-                    "STATION_NAME": next_station["FROM_STATION"],
-                    "STATION_LNG": from_station_node.geolocation_coordinates[0],
-                    "STATION_LAT": from_station_node.geolocation_coordinates[1]
+                "from": {
+                    "station_name": next_station["from_station"],
+                    "station_lng": from_station_node.geolocation_coordinates[0],
+                    "station_lat": from_station_node.geolocation_coordinates[1]
                 },
-                "TO": {
-                    "STATION_NAME": next_station["CURRENT_STATION"],
-                    "STATION_LNG": to_station_node.geolocation_coordinates[0],
-                    "STATION_LAT": to_station_node.geolocation_coordinates[1]
+                "to": {
+                    "station_name": next_station["current_station"],
+                    "station_lng": to_station_node.geolocation_coordinates[0],
+                    "station_lat": to_station_node.geolocation_coordinates[1]
                 },
-                "TRAIN_LINE": next_station["FROM_TRAIN_LINE"],
-                "CHANGE_LINE": station_change,
-                "TRAVEL_TIME": next_station["TRAVEL_TIME_BETWEEN_STATIONS"]
+                "train_line": next_station["from_train_line"],
+                "change_line": station_change,
+                "travel_time": next_station["travel_time_between_stations"]
             })
 
             # Update total travel time
-            total_travel_time += next_station["TRAVEL_TIME_BETWEEN_STATIONS"]
+            total_travel_time += next_station["travel_time_between_stations"]
 
             # Fix route order and determine if train line changes occurred
             route_in_order = route[::-1]
 
             # Set inital train line
-            prev_train_line = route_in_order[0]["TRAIN_LINE"]
-            route_in_order[0]["CHANGE_LINE"] = False
+            prev_train_line = route_in_order[0]["train_line"]
+            route_in_order[0]["change_line"] = False
 
             for route_node in route_in_order[1:]:
-                station_change = route_node["TRAIN_LINE"] != prev_train_line
-                prev_train_line = route_node["TRAIN_LINE"]
-                route_node["CHANGE_LINE"] = station_change
+                station_change = route_node["train_line"] != prev_train_line
+                prev_train_line = route_node["train_line"]
+                route_node["change_line"] = station_change
 
             # Set the next station on the route.
-            next_station = self._route_calculator[next_station["FROM_STATION"]]
+            next_station = self._route_calculator[next_station["from_station"]]
 
         return {
-            "ROUTE": route_in_order,
-            "TOTAL_TRAVEL_TIME": total_travel_time
+            "route": route_in_order,
+            "total_travel_time": total_travel_time
         }
 
     # Return the route segment formatted for HTML list.
@@ -170,11 +170,11 @@ class RoutePlanner:
         remaining_stations.insert(0, starting_station_name)
 
         # Set starting point time to 0
-        self._route_calculator[starting_station_name]["SHORTEST_TIME"] = 0
-        self._route_calculator[starting_station_name]["CURRENT_STATION"] = starting_station_name
+        self._route_calculator[starting_station_name]["shortest_time"] = 0
+        self._route_calculator[starting_station_name]["current_station"] = starting_station_name
 
         current_time_in_minutes = journey_start_time_24h_minutes
-        self._route_calculator[starting_station_name]["TIME_REACHED_STATION"] = current_time_in_minutes
+        self._route_calculator[starting_station_name]["time_reached_station"] = current_time_in_minutes
 
         # Calculate Dijkstra table
         while len(remaining_stations) != 0:
@@ -184,18 +184,18 @@ class RoutePlanner:
             # The if condition is used to increase execution speed and memory efficiency
             not_none_stations = list(
                 filter(
-                    lambda x: self._route_calculator[x]["SHORTEST_TIME"] is not None, remaining_stations
+                    lambda x: self._route_calculator[x]["shortest_time"] is not None, remaining_stations
                 )
             )
 
             not_none_stations = sorted(
-                not_none_stations, key=lambda x: self._route_calculator[x]["SHORTEST_TIME"]
+                not_none_stations, key=lambda x: self._route_calculator[x]["shortest_time"]
             )
 
             if not_none_stations == []:
                 none_type_stations = list(
                     filter(
-                        lambda x: self._route_calculator[x]["SHORTEST_TIME"] is None, remaining_stations
+                        lambda x: self._route_calculator[x]["shortest_time"] is None, remaining_stations
                     )
                 )
 
@@ -215,25 +215,25 @@ class RoutePlanner:
             )
             current_station_shortest_time = self._route_calculator[
                 current_station_name
-            ]["SHORTEST_TIME"]
+            ]["shortest_time"]
 
             current_time_in_minutes = self._route_calculator[
-                current_station_name]["TIME_REACHED_STATION"]
+                current_station_name]["time_reached_station"]
 
             # Cycle through all stations connected to current station
             for connected_station in current_station.connected_stations:
                 # Get quickest connection to specific node
-                quickest_time_index = current_station.connected_stations[connected_station]["TIME_TO"].index(
+                quickest_time_index = current_station.connected_stations[connected_station]["time_to"].index(
                     min(
-                        current_station.connected_stations[connected_station]["TIME_TO"]
+                        current_station.connected_stations[connected_station]["time_to"]
                     )
                 )
 
                 quickest_time = current_station.connected_stations[
-                    connected_station]["TIME_TO"][quickest_time_index]
+                    connected_station]["time_to"][quickest_time_index]
 
                 quickest_train_line = current_station.connected_stations[
-                    connected_station]["TRAIN_LINE"][quickest_time_index]
+                    connected_station]["train_line"][quickest_time_index]
 
                 # Add extra minute if station is not start or destination station
                 train_wait_time = 1
@@ -252,18 +252,18 @@ class RoutePlanner:
                     travel_time_between_stations = quickest_time + train_wait_time
 
                 if (
-                    (current_station_shortest_time is None or self._route_calculator[connected_station]["SHORTEST_TIME"] is None)
+                    (current_station_shortest_time is None or self._route_calculator[connected_station]["shortest_time"] is None)
                     or
                     (current_station_shortest_time + travel_time_between_stations <
-                     self._route_calculator[connected_station]["SHORTEST_TIME"])
+                     self._route_calculator[connected_station]["shortest_time"])
                 ):
                     self._route_calculator[connected_station] = {
-                        'SHORTEST_TIME': current_station_shortest_time + travel_time_between_stations,
-                        'FROM_STATION': current_station_name,
-                        'FROM_TRAIN_LINE': quickest_train_line,
-                        'CURRENT_STATION': connected_station,
-                        "TRAVEL_TIME_BETWEEN_STATIONS": travel_time_between_stations,
-                        "TIME_REACHED_STATION": current_time_in_minutes + travel_time_between_stations
+                        'shortest_time': current_station_shortest_time + travel_time_between_stations,
+                        'from_station': current_station_name,
+                        'from_train_line': quickest_train_line,
+                        'current_station': connected_station,
+                        "travel_time_between_stations": travel_time_between_stations,
+                        "time_reached_station": current_time_in_minutes + travel_time_between_stations
                     }
 
             # Remove current station from remaining stations
