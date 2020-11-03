@@ -98,7 +98,7 @@ $('#selection-submit-button').click(function () {
                 $('.route-selection').show();
 
                 // Define locations.
-                locations = response['route_locations']
+                locations = response['raw_data']['route_locations']
 
                 // If coordinates are 0 0, geocoding disabled.
                 if (locations[0]['latitude'] != 0) {

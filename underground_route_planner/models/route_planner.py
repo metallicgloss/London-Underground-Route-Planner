@@ -20,9 +20,10 @@ class RoutePlanner:
     # ----------------------------------------------------------------------- #
 
     # Initialise the route planner object.
-    def __init__(self, station_handler: StationHandler, route_speed_factors: {}):
+    def __init__(self, station_handler: StationHandler, route_speed_factors: {}, route_geocoding: bool):
         self._station_handler = station_handler
         self._route_speed_factors = route_speed_factors
+        self._route_geocoding = route_geocoding
         self._route_calculator = {}
 
     # Initiaise the calculator, reset values, add all names to the calculator.
@@ -41,44 +42,66 @@ class RoutePlanner:
                 "time_reached_station": None
             }
 
+    # Returns the formatted location for processing on frontend Google Maps JS API.
+    def _get_formatted_location(self, geolocation_coordinates: list, underground_line: str) -> dict:
+        return {
+            'longitude': geolocation_coordinates[0],
+            'latitude': geolocation_coordinates[1],
+            'css_color_variable': "--" + underground_line.lower().split(" ", 1)[0] + "-line"
+        }
+
     # Returns the route stored in route_calculator as a list of objects to be used by the front end
+
     def _get_formatted_route(self, starting_station_name: str, destination_station_name: str) -> list:
         route = []
+        route_locations = []
         next_station = self._route_calculator[destination_station_name]
         prev_train_line = ""
-        total_travel_time = 0
 
         while next_station["current_station"] != starting_station_name:
-            from_station_node = self._station_handler.get_station_node_by_name(
-                next_station["from_station"]
-            )
-            to_station_node = self._station_handler.get_station_node_by_name(
-                next_station["current_station"]
-            )
             station_change = False
+
+            # If geocoding is enabled, handle location formatting.
+            if(self._route_geocoding):
+                # If route locations empty, currently at destination station (loop works backwards)
+                if(route_locations == []):
+                    # Fetch destination station node details.
+                    to_station_node = self._station_handler.get_station_node_by_name(
+                        next_station["current_station"]
+                    )
+
+                    # Add pathway to destination location for mapping.
+                    route_locations.append(
+                        self._get_formatted_location(
+                            to_station_node.geolocation_coordinates,
+                            next_station["from_train_line"]
+                        )
+                    )
+
+                # Get the origin station for each route segment.
+                from_station_node = self._station_handler.get_station_node_by_name(
+                    next_station["from_station"]
+                )
+
+                # Add pathway of origin location for mapping.
+                route_locations.append(
+                    self._get_formatted_location(
+                        from_station_node.geolocation_coordinates,
+                        next_station["from_train_line"]
+                    )
+                )
 
             if next_station["from_train_line"] != prev_train_line:
                 prev_train_line = next_station["from_train_line"]
                 station_change = True
 
             route.append({
-                "from": {
-                    "station_name": next_station["from_station"],
-                    "station_lng": from_station_node.geolocation_coordinates[0],
-                    "station_lat": from_station_node.geolocation_coordinates[1]
-                },
-                "to": {
-                    "station_name": next_station["current_station"],
-                    "station_lng": to_station_node.geolocation_coordinates[0],
-                    "station_lat": to_station_node.geolocation_coordinates[1]
-                },
+                "from": next_station["from_station"],
+                "to": next_station["current_station"],
                 "train_line": next_station["from_train_line"],
                 "change_line": station_change,
                 "travel_time": next_station["travel_time_between_stations"]
             })
-
-            # Update total travel time
-            total_travel_time += next_station["travel_time_between_stations"]
 
             # Fix route order and determine if train line changes occurred
             route_in_order = route[::-1]
@@ -97,7 +120,7 @@ class RoutePlanner:
 
         return {
             "route": route_in_order,
-            "total_travel_time": total_travel_time
+            "route_locations": route_locations[::-1]
         }
 
     # Return the route segment formatted for HTML list.
