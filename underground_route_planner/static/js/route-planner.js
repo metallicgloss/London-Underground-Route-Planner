@@ -53,7 +53,7 @@ $('#origin-location, #destination-location').typeahead({
         }
 
         // Display error popup to user.
-        $('#error-message-content').html("testing");
+        $('#error-message-content').html("Please select a station from the available dropdown.");
         $('#error-message').modal('show');
 
         // Clear value
