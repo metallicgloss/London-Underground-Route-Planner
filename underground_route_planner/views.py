@@ -53,7 +53,8 @@ def route_search(request):
         {
             'raw_data': route_data,
             'route_table': html_data['route_table'],
-            'route_summary': html_data['route_summary']
+            'route_summary': html_data['route_summary'],
+            'route_travel_time': html_data['route_travel_time']
         },
         safe=True
     )

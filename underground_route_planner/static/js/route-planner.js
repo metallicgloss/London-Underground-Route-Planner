@@ -91,7 +91,7 @@ $('#selection-submit-button').click(function () {
                 // Export data to table, summary and total box.
                 $('#route-table').append(response['route_table'])
                 $('#summary-block').append(response['route_summary'])
-                $('#total-travel-time').html(response['raw_data']['total_travel_time'])
+                $('#total-travel-time').html(response['route_travel_time'])
 
                 // Expand route box.
                 $('.selection-box').addClass('selection-box-large');
@@ -100,8 +100,8 @@ $('#selection-submit-button').click(function () {
                 // Define locations.
                 locations = response['raw_data']['route_locations']
 
-                // If coordinates are 0 0, geocoding disabled.
-                if (locations[0]['latitude'] != 0) {
+                // If coordinates are empty, geocoding disabled.
+                if (locations.length != 0) {
                     // Set map object to correct height based on number of stations in the route.
                     $('#map-object').height(((Object.keys(response['raw_data']['route']).length - 1) * 42) + 100)
 
