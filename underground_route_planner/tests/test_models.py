@@ -11,28 +11,6 @@ from underground_route_planner.models.geocode_handler import GeoCoding
 #                            3. RoutePlanner Tests                            #
 # --------------------------------------------------------------------------- #
 
-# --------------------------------------------------------------------------- #
-#                            1. GeoCoding Tests                               #
-# --------------------------------------------------------------------------- #
-
-class GeoCodingTester(TestCase):
-    # Test setup.
-    @classmethod
-    def setUpTestData(self):
-        # Initialise Geocoding object.
-        self.geocoding_element = GeoCoding()
-        pass
-
-    # Test to ensure that get co-ordinates function is acting as expected.
-    def test_get_waterloo_coordinates(self):
-        print("Method: test_get_waterloo_coordinates.")
-        self.assertEqual(
-            [-0.1134282, 51.5024413],
-            self.geocoding_element.get_coordinates(
-                "Waterloo Underground Station, London"
-            )
-        )
-
 
 # --------------------------------------------------------------------------- #
 #                            2. StationHandler Tests                          #

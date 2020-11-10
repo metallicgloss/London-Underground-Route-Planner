@@ -189,6 +189,10 @@ body {
     line-height: 20px;
 }
 
+.homepage-selection .invalid-selection::placeholder {
+    color: #dc3545;
+}
+
 .homepage-selection #train-graphic {
     margin-top: -42px;
     margin-left: 2px;
@@ -354,6 +358,12 @@ body {
     padding-left: 20px;
     margin-bottom: 10px;
 }
+
+/* 
+-------------------------------------------------
+-------------     Warning Modal     -------------
+-------------------------------------------------
+*/
 
 /* 
 -----------------------------------------------------
