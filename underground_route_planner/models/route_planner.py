@@ -4,7 +4,11 @@ from .station_handler import StationHandler
 # --------------------------------------------------------------------------- #
 #                                  CONTENTS                                   #
 #                            1. Route Planner Class                           #
-#                            1.1 Route Planner Class Methods                  #
+#                            1.1 Initialise Object                            #
+#                            1.2 Initialise Calculator                        #
+#                            1.3 Calcualte Route                              #
+#                            1.4 Generate Route Structure                     #
+#                            1.5 Generate Location Structure                  #
 # --------------------------------------------------------------------------- #
 
 
@@ -16,7 +20,7 @@ from .station_handler import StationHandler
 class RoutePlanner:
 
     # ----------------------------------------------------------------------- #
-    #                    1.1 Route Planner Class Methods                      #
+    #                        1.1 Initialise Object                            #
     # ----------------------------------------------------------------------- #
 
     # Initialise the route planner object.
@@ -25,6 +29,10 @@ class RoutePlanner:
         self._route_speed_factors = route_speed_factors
         self._route_geocoding = route_geocoding
         self._route_calculator = {}
+
+    # ----------------------------------------------------------------------- #
+    #                        1.2 Initialise Calculator                        #
+    # ----------------------------------------------------------------------- #
 
     # Initiaise the calculator, reset values, add all names to the calculator.
     def _initalise_route_calculator(self) -> None:
@@ -42,136 +50,12 @@ class RoutePlanner:
                 "time_reached_station": None
             }
 
-    # Returns the formatted location for processing on frontend Google Maps JS API.
-    def _get_formatted_location(self, geolocation_coordinates: list, underground_line: str) -> dict:
-        return {
-            'longitude': geolocation_coordinates[0],
-            'latitude': geolocation_coordinates[1],
-            'css_color_variable': "--" + underground_line.lower().split(" ", 1)[0] + "-line"
-        }
-
-    # Returns the route stored in route_calculator as a list of objects to be used by the front end
-
-    def _get_formatted_route(self, starting_station_name: str, destination_station_name: str) -> list:
-        route = []
-        route_locations = []
-        next_station = self._route_calculator[destination_station_name]
-        prev_train_line = ""
-
-        while next_station["current_station"] != starting_station_name:
-            station_change = False
-
-            # If geocoding is enabled, handle location formatting.
-            if(self._route_geocoding):
-                # If route locations empty, currently at destination station (loop works backwards)
-                if(route_locations == []):
-                    # Fetch destination station node details.
-                    to_station_node = self._station_handler.get_station_node_by_name(
-                        next_station["current_station"]
-                    )
-
-                    # Add pathway to destination location for mapping.
-                    route_locations.append(
-                        self._get_formatted_location(
-                            to_station_node.geolocation_coordinates,
-                            next_station["from_train_line"]
-                        )
-                    )
-
-                # Get the origin station for each route segment.
-                from_station_node = self._station_handler.get_station_node_by_name(
-                    next_station["from_station"]
-                )
-
-                # Add pathway of origin location for mapping.
-                route_locations.append(
-                    self._get_formatted_location(
-                        from_station_node.geolocation_coordinates,
-                        next_station["from_train_line"]
-                    )
-                )
-
-            if next_station["from_train_line"] != prev_train_line:
-                prev_train_line = next_station["from_train_line"]
-                station_change = True
-
-            route.append({
-                "from": next_station["from_station"],
-                "to": next_station["current_station"],
-                "train_line": next_station["from_train_line"],
-                "change_line": station_change,
-                "travel_time": next_station["travel_time_between_stations"]
-            })
-
-            # Fix route order and determine if train line changes occurred
-            route_in_order = route[::-1]
-
-            # Set inital train line
-            prev_train_line = route_in_order[0]["train_line"]
-            route_in_order[0]["change_line"] = False
-
-            for route_node in route_in_order[1:]:
-                station_change = route_node["train_line"] != prev_train_line
-                prev_train_line = route_node["train_line"]
-                route_node["change_line"] = station_change
-
-            # Set the next station on the route.
-            next_station = self._route_calculator[next_station["from_station"]]
-
-        return {
-            "route": route_in_order,
-            "route_locations": route_locations[::-1]
-        }
-
-    # Return the route segment formatted for HTML list.
-    def get_formatted_html_route(self, station_name: str, underground_line: str, travel_time: int, total_travel_time: int) -> str:
-        return (
-            "<tr><td>"
-            + station_name
-            + "</td><td class = '"
-            + underground_line.lower()
-            + "'>"
-            + underground_line
-            + "</td><td>"
-            + str(total_travel_time)
-            + " mins <small>(+"
-            + str(travel_time)
-            + " mins)</small></td></tr>"
-        )
-
-    # Return the route segment formatted for HTML summary.
-    def get_formatted_html_summary(self, origin_station: str, destination_station: str, underground_line: str) -> str:
-        return (
-            "<li>"
-            + origin_station
-            + " Station to "
-            + destination_station
-            + " Station - <span class='"
-            + underground_line.lower().split(" ", 1)[0]
-            + "'>"
-            + underground_line
-            + " Line </span> </li>"
-        )
-
-    # Return the route segment formatted for HTML summary.
-
-    def get_formatted_html_change_summary(self, station_name: str, from_line: str, to_line: str) -> str:
-        return (
-            "<li>Change at "
-            + station_name
-            + " from the <span class='"
-            + from_line.lower().split(" ", 1)[0]
-            + "'>"
-            + from_line
-            + " Line </span> to the <span class='"
-            + to_line.lower().split(" ", 1)[0]
-            + "'>"
-            + to_line
-            + " Line</span></li>"
-        )
+    # ----------------------------------------------------------------------- #
+    #                        1.3 Calcualte Route                              #
+    # ----------------------------------------------------------------------- #
 
     # Calculate the quickest route from the starting station to the next station.
-    def get_route(self, starting_station_name: str, destination_station_name: str, journey_start_time_24h_minutes: int) -> list:
+    def calculate_route(self, starting_station_name: str, destination_station_name: str, journey_start_time_24h_minutes: int) -> list:
         # Checks if the journey time should be altered to due changes made in the configuration
         def check_route_speed_factor_should_apply(current_time_in_minutes: int, train_line: str) -> bool:
             conditon_met = False
@@ -292,4 +176,92 @@ class RoutePlanner:
             # Remove current station from remaining stations
             remaining_stations.remove(current_station_name)
 
-        return self._get_formatted_route(starting_station_name, destination_station_name)
+        return self._generate_route_structure(starting_station_name, destination_station_name)
+
+    # ----------------------------------------------------------------------- #
+    #                        1.4 Generate Route Structure                     #
+    # ----------------------------------------------------------------------- #
+
+    # Returns the route stored in route_calculator as a list of objects to be used by the front end
+    def _generate_route_structure(self, starting_station_name: str, destination_station_name: str) -> list:
+        route = []
+        route_locations = []
+        next_station = self._route_calculator[destination_station_name]
+        prev_train_line = ""
+
+        while next_station["current_station"] != starting_station_name:
+            station_change = False
+
+            # If geocoding is enabled, handle location formatting.
+            if(self._route_geocoding):
+                # If route locations empty, currently at destination station (loop works backwards)
+                if(route_locations == []):
+                    # Fetch destination station node details.
+                    to_station_node = self._station_handler.get_station_node_by_name(
+                        next_station["current_station"]
+                    )
+
+                    # Add pathway to destination location for mapping.
+                    route_locations.append(
+                        self._generate_location_structure(
+                            to_station_node.geolocation_coordinates,
+                            next_station["from_train_line"]
+                        )
+                    )
+
+                # Get the origin station for each route segment.
+                from_station_node = self._station_handler.get_station_node_by_name(
+                    next_station["from_station"]
+                )
+
+                # Add pathway of origin location for mapping.
+                route_locations.append(
+                    self._generate_location_structure(
+                        from_station_node.geolocation_coordinates,
+                        next_station["from_train_line"]
+                    )
+                )
+
+            if next_station["from_train_line"] != prev_train_line:
+                prev_train_line = next_station["from_train_line"]
+                station_change = True
+
+            route.append({
+                "from": next_station["from_station"],
+                "to": next_station["current_station"],
+                "train_line": next_station["from_train_line"],
+                "change_line": station_change,
+                "travel_time": next_station["travel_time_between_stations"]
+            })
+
+            # Fix route order and determine if train line changes occurred
+            route_in_order = route[::-1]
+
+            # Set inital train line
+            prev_train_line = route_in_order[0]["train_line"]
+            route_in_order[0]["change_line"] = False
+
+            for route_node in route_in_order[1:]:
+                station_change = route_node["train_line"] != prev_train_line
+                prev_train_line = route_node["train_line"]
+                route_node["change_line"] = station_change
+
+            # Set the next station on the route.
+            next_station = self._route_calculator[next_station["from_station"]]
+
+        return {
+            "route": route_in_order,
+            "route_locations": route_locations[::-1]
+        }
+
+    # ----------------------------------------------------------------------- #
+    #                        1.5 Generate Location Structure                  #
+    # ----------------------------------------------------------------------- #
+
+    # Returns the location for processing on frontend Google Maps JS API.
+    def _generate_location_structure(self, geolocation_coordinates: list, underground_line: str) -> dict:
+        return {
+            'longitude': geolocation_coordinates[0],
+            'latitude': geolocation_coordinates[1],
+            'css_color_variable': "--" + underground_line.lower().split(" ", 1)[0] + "-line"
+        }
