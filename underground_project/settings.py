@@ -46,6 +46,15 @@ TEMPLATES = [
     },
 ]
 
+# Database
+# Not used; required by base django.
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
 WSGI_APPLICATION = 'underground_project.wsgi.application'
 
 # Internationalization

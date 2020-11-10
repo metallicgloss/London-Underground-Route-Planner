@@ -46,9 +46,15 @@ $('#origin-location, #destination-location').typeahead({
         // Add text danger to the applicable title - parent seems to not be working as expected.
         if ($(this).attr('id') == "origin-location") {
             $('.from-title').addClass('text-danger');
+            $('#origin-location').addClass('invalid-selection');
         } else {
             $('.to-title').addClass('text-danger');
+            $('#destination-location').addClass('invalid-selection');
         }
+
+        // Display error popup to user.
+        $('#error-message-content').html("testing");
+        $('#error-message').modal('show');
 
         // Clear value
         $('#' + $(this).attr('id')).val('')
@@ -57,17 +63,22 @@ $('#origin-location, #destination-location').typeahead({
         // Else, clear warning and accept input.
         if ($(this).attr('id') == "origin-location") {
             $('.from-title').removeClass('text-danger');
+            $('#origin-location').removeClass('invalid-selection');
         } else {
             $('.to-title').removeClass('text-danger');
+            $('#destination-location').removeClass('invalid-selection');
         }
     }
 });
+
+function time_set() {
+    $('.at-title').removeClass('text-danger');
+}
 
 var existingSearch = false;
 
 // Handle route search query
 $('#selection-submit-button').click(function () {
-
     // If both search fields are not blank.
     if ([$('#origin-location').val(), $('#destination-location').val(), $('#start-time').val()].every(function (i) { return i !== ""; })) {
         // If existing search performed, reset.
@@ -486,10 +497,35 @@ $('#selection-submit-button').click(function () {
                 console.log(xhr)
             }
         });
-    } else {
-        // Nicely handle error here.
-    }
 
-    // Clear input boxes to allow for immediate new route.
-    $("#origin-location, #destination-location, #start-time").val('');
+        // Clear input boxes to allow for immediate new route.
+        $("#origin-location, #destination-location, #start-time").val('');
+    } else {
+        // One field failed to be entered.
+        error_message = ""
+
+        // If origin station not set, add message to error and set field to red.
+        if ($('#origin-location').val() == "") {
+            error_message += "Please enter your origin station.<br>";
+            $('.from-title').addClass('text-danger');
+            $('#origin-location').addClass('invalid-selection');
+        }
+
+        // If destination station not set, add message to error and set field to red.
+        if ($('#destination-location').val() == "") {
+            error_message += "Please enter your destination station.<br>";
+            $('.to-title').addClass('text-danger');
+            $('#destination-location').addClass('invalid-selection');
+        }
+
+        // If start time not set, add message to error and set field to red.
+        if ($('#start-time').val() == "") {
+            error_message += "Please enter a time to start your journey.";
+            $('.at-title').addClass('text-danger');
+        }
+
+        // Set modal content, display.
+        $('#error-message-content').html(error_message);
+        $('#error-message').modal('show');
+    }
 });
