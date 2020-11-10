@@ -53,7 +53,7 @@ class DataHandler:
     def _initialise_configuration_file(self):
         # Define default configuration.
         base_configuration = {
-            "route_data_file": "",
+            "route_data_file": "London Underground Data.xlsx",
             "route_geocoding": False,
             "route_geocoding_api_key": "",
             "route_geocoded_data": {},

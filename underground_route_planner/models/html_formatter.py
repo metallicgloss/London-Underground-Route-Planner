@@ -34,7 +34,8 @@ class HTMLFormatter:
         # Define response format.
         self.formatted = {
             'route_table': '',
-            'route_summary': ''
+            'route_summary': '',
+            'route_travel_time': 0
         }
 
     # ----------------------------------------------------------------------- #
@@ -111,6 +112,8 @@ class HTMLFormatter:
                     self.current_underground_line
                 )
 
+        self.formatted['route_travel_time'] = self.time_sub_total
+
         return self.formatted
 
     # ----------------------------------------------------------------------- #
@@ -120,10 +123,11 @@ class HTMLFormatter:
     # Return the route segment formatted for HTML list.
     def get_route(self, station_name: str, underground_line: str, travel_time: int, total_travel_time: int) -> str:
         return (
-            "<tr> <td>{stn}</td><td class='{line_cls}'>{line} Line</td><td>{total} mins <small>({increase} mins)</small></td></tr>".format(
+            "<tr> <td>{stn}</td><td class='{line_cls}'>{line} {line_status}</td><td>{total} mins <small>(+{increase} mins)</small></td></tr>".format(
                 stn=station_name,
                 line_cls=underground_line.lower(),
                 line=underground_line,
+                line_status="Line" if underground_line != "-" else "",
                 total=str(total_travel_time),
                 increase=str(travel_time)
             )
@@ -139,7 +143,7 @@ class HTMLFormatter:
             "<li>{orig} Station to {dest} Station - <span class='{line_cls}'>{line} Line</span></li>".format(
                 orig=origin_station,
                 dest=destination_station,
-                cls=underground_line.lower().split(" ", 1)[0],
+                line_cls=underground_line.lower().split(" ", 1)[0],
                 line=underground_line
             )
         )
