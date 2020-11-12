@@ -42,7 +42,7 @@ $('#origin-location, #destination-location').typeahead({
     }
 }).bind('change blur', function () {
     // On field change, if value is not in the cached list, clear and warn.
-    if (stationList.valueCache.indexOf($(this).val()) === -1) {
+    if ((stationList.valueCache.indexOf($(this).val()) === -1) && ($(this).val() != "")) {
         // Add text danger to the applicable title - parent seems to not be working as expected.
         if ($(this).attr('id') == "origin-location") {
             $('.from-title').addClass('text-danger');
