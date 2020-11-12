@@ -189,6 +189,10 @@ body {
     line-height: 20px;
 }
 
+.homepage-selection .invalid-selection::placeholder {
+    color: #dc3545;
+}
+
 .homepage-selection #train-graphic {
     margin-top: -42px;
     margin-left: 2px;
@@ -404,6 +408,10 @@ body {
 
 .license-list {
     margin-top: 75px;
+}
+
+.license-list .row {
+    margin-bottom: 25px
 }
 
 /* 

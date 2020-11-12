@@ -1,17 +1,32 @@
 import googlemaps
 from django.db import models
 
+# --------------------------------------------------------------------------- #
+#                                  CONTENTS                                   #
+#                            1. Geocode Hander Class                          #
+#                            1.1 Initialise Object                            #
+#                            1.2 Get Coordinates                              #
+# --------------------------------------------------------------------------- #
+
 
 class GeoCoding:
-    def __init__(self):
+
+    # ----------------------------------------------------------------------- #
+    #                        1.1 Initialise Object                            #
+    # ----------------------------------------------------------------------- #
+
+    def __init__(self, route_geocoding_api_key):
         # Define internal variable for google map connection.
         self._google_map_connection = googlemaps.Client(
-            key='AIzaSyB2JJaU3ySjHvqyO7a_HGNf3-pS0dZBjo4'
+            key=route_geocoding_api_key
         )
 
-    def get_coordinates(self, address_query: str):
-        # Return coordinates for address query.
+    # ----------------------------------------------------------------------- #
+    #                        1.2 Get Coordinates                              #
+    # ----------------------------------------------------------------------- #
 
+    # Return coordinates for address query.
+    def get_coordinates(self, address_query: str):
         # Assign variable for data returned from query.
         # [0] - 1st element in query in the event more than one result returned.
         # ['geometry']['location'] - Target data body.

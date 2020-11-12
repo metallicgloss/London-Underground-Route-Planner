@@ -26,8 +26,8 @@
                     <input type="text" name="destination-location" id="destination-location" placeholder="Destination Location" />
                 </div>
                 <div class="col-lg-2">
-                    <p class="selection-title">At</p>
-                    <input type="time" name="start-time" id="start-time" />
+                    <p class="selection-title at-title">At</p>
+                    <input type="time" name="start-time" id="start-time" onchange="time_set()" />
                 </div>
                 <div class="col-lg-2 search-train-graphic-box">
                     <img src="{% static 'imgs/train-graphic.svg' %}" id="train-graphic" />
@@ -111,6 +111,21 @@
                         route to your chosen destination!<br>
                     </p>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="error-message" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Whoops! That doesn't look quite right.</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="text-danger" id="error-message-content"></p>
             </div>
         </div>
     </div>
