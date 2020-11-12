@@ -5,9 +5,22 @@ from array import array
 # --------------------------------------------------------------------------- #
 #                                  CONTENTS                                   #
 #                            1. Station Handler Class                         #
-#                            1.1 Station Class                                #
-#                            1.2 Station Class Methods                        #
-#                            1.3 Station Handler Class Methods                #
+#                            1.1 Initialise Station Handler Object            #
+#                            1.2 Add Station Alphabetically                   #
+#                            1.3 Get Station Node By Name                     #
+#                            1.4 Get Best Travel Direction                    #
+#                            1.5 Query Station names                          #
+#                            1.6 Get All Station Names                        #
+#                            1.7 Get Next Station                             #
+#                            1.8 Get Previous Station                         #
+#                            1.9 Get Current Station                          #
+#                            1.10 Set Index Pointer                           #
+#                            1.11 Station Handler Properties                  #
+#                            2. Station Class                                 #
+#                            2.1 Initialise Station Object                    #
+#                            2.2 Add Station Connection                       #
+#                            2.3 Get Station Connection                       #
+#                            2.4 Station Properties                           #
 # --------------------------------------------------------------------------- #
 
 
@@ -18,7 +31,7 @@ from array import array
 class StationHandler:
 
     # ----------------------------------------------------------------------- #
-    #                          1.1 Station Class                              #
+    #                        2. Station Class                                 #
     # ----------------------------------------------------------------------- #
 
     class Station:
@@ -31,7 +44,7 @@ class StationHandler:
         ]
 
         # ------------------------------------------------------------------- #
-        #                      1.2 Station Class Methods                      #
+        #                    2.1 Initialise Station Object                    #
         # ------------------------------------------------------------------- #
 
         # Initialise the station class, accepting input of the station name.
@@ -42,37 +55,40 @@ class StationHandler:
             self._prev_node = None
             self._next_node = None
 
+        # ------------------------------------------------------------------- #
+        #                    2.2 Add Station Connection                       #
+        # ------------------------------------------------------------------- #
+
         # Create a connection to a new station object, include the time table and trainline.
         def add_station_connection(self, station_node: object, time_taken: int, train_line: str, bidirectional=True):
             # bidirectional defaulted to true to prevent need for creating a connection in opposite direction.
-
             station_name = station_node.station_name
 
             if station_name in self._connected_stations.keys():
                 # Check connection does not already exist
-                if self._connected_stations[station_name]["TRAIN_LINE"] == train_line and \
-                        self._connected_stations[station_name]["STATION_NODE"] == station_node:
+                if self._connected_stations[station_name]["train_line"] == train_line and \
+                        self._connected_stations[station_name]["station_node"] == station_node:
                     # Connection already exists.
                     raise Exception(
                         "Attempted to create a duplicate connection.")
                 else:
                     # Append new values to connections - append rather than set to enable multiple connections from a single station.
-                    self._connected_stations[station_name]["TIME_TO"].append(
+                    self._connected_stations[station_name]["time_to"].append(
                         time_taken
                     )
-                    self._connected_stations[station_name]["TRAIN_LINE"].append(
+                    self._connected_stations[station_name]["train_line"].append(
                         train_line
                     )
-                    self._connected_stations[station_name]["STATION_NODE"].append(
+                    self._connected_stations[station_name]["station_node"].append(
                         station_node
                     )
 
             else:
                 # Connection already exists, update data.
                 connected_station_information = {
-                    "TIME_TO": array("i", [time_taken]),
-                    "TRAIN_LINE": [train_line],
-                    "STATION_NODE": [station_node]
+                    "time_to": array("i", [time_taken]),
+                    "train_line": [train_line],
+                    "station_node": [station_node]
                 }
                 self._connected_stations[station_name] = connected_station_information
 
@@ -81,6 +97,10 @@ class StationHandler:
                 station_node.add_station_connection(
                     self, time_taken, train_line
                 )
+
+        # ------------------------------------------------------------------- #
+        #                    2.3 Get Station Connection                       #
+        # ------------------------------------------------------------------- #
 
         # Returns the data about the station connection to another station.
         def get_station_connection(self, station_name: str) -> dict:
@@ -91,6 +111,10 @@ class StationHandler:
                 station_info = self._connected_stations[station_name]
 
             return station_info
+
+        # ------------------------------------------------------------------- #
+        #                    2.4 Station Properties                           #
+        # ------------------------------------------------------------------- #
 
         # Return previous station object.
         @property
@@ -147,16 +171,19 @@ class StationHandler:
             self._geolocation_coordinates = [long_and_lat[0], long_and_lat[1]]
 
     # ----------------------------------------------------------------------- #
-    #                    1.3 Station Handler Class Methods                    #
+    #                        1.1 Initialise Station Handler Object            #
     # ----------------------------------------------------------------------- #
 
     # Initialise the station object.
-
     def __init__(self):
         self._head = None
         self._tail = None
         self._length = 0
         self.__first_letter_frequency = {}
+
+    # ----------------------------------------------------------------------- #
+    #                        1.2 Add Station Alphabetically                   #
+    # ----------------------------------------------------------------------- #
 
     # Insert a new station into the double linked list in alphabetical order.
     def add_station_alphabetically(self, station_name: str) -> None:
@@ -275,15 +302,9 @@ class StationHandler:
 
         self._length += 1
 
-    # Print list of all stations in order of linked list. Used primarily in backend testing environment.
-    def print_all_stations(self, current_node=None) -> None:
-        # If starting point not specified, start from the begining
-        if current_node is None:
-            current_node = self._head
-
-        while current_node is not None:
-            print(current_node.station_name)
-            current_node = current_node.next_node
+    # ----------------------------------------------------------------------- #
+    #                        1.3 Get Station Node By Name                     #
+    # ----------------------------------------------------------------------- #
 
     # Get station object by name, else none if not found.
     def get_station_node_by_name(self, station_name: str):
@@ -309,6 +330,10 @@ class StationHandler:
                     current_node = current_node.prev_node
 
         return current_node
+
+    # ----------------------------------------------------------------------- #
+    #                        1.4 Get Best Travel Direction                    #
+    # ----------------------------------------------------------------------- #
 
     # Get the optimial direction of travel. Returns 1 or -1 depending on if you should start from the head or tail to reach target.
     def get_optimal_direction_of_travel(self, target_station: str) -> int:
@@ -342,6 +367,10 @@ class StationHandler:
 
         return direction
 
+    # ----------------------------------------------------------------------- #
+    #                        1.5 Query Station names                          #
+    # ----------------------------------------------------------------------- #
+
     # Finds all station names that begin with the parameter station_name
     def query_station_names(self, station_name: str) -> list:
         current_node = self._head
@@ -355,10 +384,9 @@ class StationHandler:
 
         return station_names
 
-    # Returns the total number of station stored in the list.
-    @property
-    def total_stations(self):
-        return self._length
+    # ----------------------------------------------------------------------- #
+    #                        1.6 Get All Station Names                        #
+    # ----------------------------------------------------------------------- #
 
     # Returns the names of all of the stations stored in the list. Used primarily in backend testing environment.
     def get_all_station_names(self) -> list:
@@ -374,12 +402,20 @@ class StationHandler:
 
         return station_name
 
+    # ----------------------------------------------------------------------- #
+    #                        1.7 Get Next Station                             #
+    # ----------------------------------------------------------------------- #
+
     # Return the next station object. Will return none if at the end.
     def get_next_station(self) -> object:
         if self._pointer is not None:
             self._pointer = self._pointer.next_node
 
         return self._pointer
+
+    # ----------------------------------------------------------------------- #
+    #                        1.8 Get Previous Station                         #
+    # ----------------------------------------------------------------------- #
 
     # Return the previous station object. Will return none if at the start.
     def get_prev_station(self) -> object:
@@ -388,9 +424,17 @@ class StationHandler:
 
         return self._pointer
 
+    # ----------------------------------------------------------------------- #
+    #                        1.9 Get Current Station                          #
+    # ----------------------------------------------------------------------- #
+
     # Gets the current station at the pointer location.
     def get_current_station(self) -> object:
         return self._pointer
+
+    # ----------------------------------------------------------------------- #
+    #                        1.10 Set Index Pointer                           #
+    # ----------------------------------------------------------------------- #
 
     # Set the pointer at the head (1) or tail (-1)
     def set_pointer(self, direction=-1) -> None:
@@ -402,3 +446,12 @@ class StationHandler:
 
         else:
             raise Exception("Invalid value for direction parameter")
+
+    # ----------------------------------------------------------------------- #
+    #                        1.11 Station Handler Properties                  #
+    # ----------------------------------------------------------------------- #
+
+    # Returns the total number of station stored in the list.
+    @property
+    def total_stations(self):
+        return self._length

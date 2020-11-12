@@ -42,13 +42,19 @@ $('#origin-location, #destination-location').typeahead({
     }
 }).bind('change blur', function () {
     // On field change, if value is not in the cached list, clear and warn.
-    if (stationList.valueCache.indexOf($(this).val()) === -1) {
+    if ((stationList.valueCache.indexOf($(this).val()) === -1) && ($(this).val() != "")) {
         // Add text danger to the applicable title - parent seems to not be working as expected.
         if ($(this).attr('id') == "origin-location") {
             $('.from-title').addClass('text-danger');
+            $('#origin-location').addClass('invalid-selection');
         } else {
             $('.to-title').addClass('text-danger');
+            $('#destination-location').addClass('invalid-selection');
         }
+
+        // Display error popup to user.
+        $('#error-message-content').html("Please select a station from the available dropdown.");
+        $('#error-message').modal('show');
 
         // Clear value
         $('#' + $(this).attr('id')).val('')
@@ -57,17 +63,22 @@ $('#origin-location, #destination-location').typeahead({
         // Else, clear warning and accept input.
         if ($(this).attr('id') == "origin-location") {
             $('.from-title').removeClass('text-danger');
+            $('#origin-location').removeClass('invalid-selection');
         } else {
             $('.to-title').removeClass('text-danger');
+            $('#destination-location').removeClass('invalid-selection');
         }
     }
 });
+
+function time_set() {
+    $('.at-title').removeClass('text-danger');
+}
 
 var existingSearch = false;
 
 // Handle route search query
 $('#selection-submit-button').click(function () {
-
     // If both search fields are not blank.
     if ([$('#origin-location').val(), $('#destination-location').val(), $('#start-time').val()].every(function (i) { return i !== ""; })) {
         // If existing search performed, reset.
@@ -89,21 +100,21 @@ $('#selection-submit-button').click(function () {
             },
             success: function (response) {
                 // Export data to table, summary and total box.
-                $('#route-table').append(response['TABLE_OUTPUT'])
-                $('#summary-block').append(response['SUMMARY_OUTPUT'])
-                $('#total-travel-time').html(response['RAW_DATA']['TOTAL_TRAVEL_TIME'])
+                $('#route-table').append(response['route_table'])
+                $('#summary-block').append(response['route_summary'])
+                $('#total-travel-time').html(response['route_travel_time'])
 
                 // Expand route box.
                 $('.selection-box').addClass('selection-box-large');
                 $('.route-selection').show();
 
                 // Define locations.
-                locations = response['LOCATION_DATA']
+                locations = response['raw_data']['route_locations']
 
-                // If coordinates are 0 0, geocoding disabled.
-                if (locations[0]['LATITUDE'] != 0) {
+                // If coordinates are empty, geocoding disabled.
+                if (locations.length != 0) {
                     // Set map object to correct height based on number of stations in the route.
-                    $('#map-object').height(((Object.keys(response['RAW_DATA']['ROUTE']).length - 1) * 42) + 100)
+                    $('#map-object').height(((Object.keys(response['raw_data']['route']).length - 1) * 42) + 100)
 
                     // Create styled map with center in the middle of London
                     const map = new google.maps.Map(document.getElementById("map-object"), {
@@ -462,15 +473,15 @@ $('#selection-submit-button').click(function () {
                         if (typeof locations[i + 1] !== 'undefined') {
                             // Parse polygon shape using the current station and the next station.
                             var selectedPolygon = [
-                                { lat: locations[i]['LATITUDE'], lng: locations[i]['LONGITUDE'] },
-                                { lat: locations[i + 1]['LATITUDE'], lng: locations[i + 1]['LONGITUDE'] },
+                                { lat: locations[i]['latitude'], lng: locations[i]['longitude'] },
+                                { lat: locations[i + 1]['latitude'], lng: locations[i + 1]['longitude'] },
                             ]
 
                             // Create a new polyline with the data.
                             const selectedJourney = new google.maps.Polyline({
                                 path: selectedPolygon,
                                 geodesic: true,
-                                strokeColor: getComputedStyle(document.documentElement).getPropertyValue(locations[i]['CSS_COLOR_VARIABLE']),
+                                strokeColor: getComputedStyle(document.documentElement).getPropertyValue(locations[i]['css_color_variable']),
                                 strokeOpacity: 1.0,
                                 strokeWeight: 4,
                                 map: map
@@ -486,10 +497,35 @@ $('#selection-submit-button').click(function () {
                 console.log(xhr)
             }
         });
-    } else {
-        // Nicely handle error here.
-    }
 
-    // Clear input boxes to allow for immediate new route.
-    $("#origin-location, #destination-location, #start-time").val('');
+        // Clear input boxes to allow for immediate new route.
+        $("#origin-location, #destination-location, #start-time").val('');
+    } else {
+        // One field failed to be entered.
+        error_message = ""
+
+        // If origin station not set, add message to error and set field to red.
+        if ($('#origin-location').val() == "") {
+            error_message += "Please enter your origin station.<br>";
+            $('.from-title').addClass('text-danger');
+            $('#origin-location').addClass('invalid-selection');
+        }
+
+        // If destination station not set, add message to error and set field to red.
+        if ($('#destination-location').val() == "") {
+            error_message += "Please enter your destination station.<br>";
+            $('.to-title').addClass('text-danger');
+            $('#destination-location').addClass('invalid-selection');
+        }
+
+        // If start time not set, add message to error and set field to red.
+        if ($('#start-time').val() == "") {
+            error_message += "Please enter a time to start your journey.";
+            $('.at-title').addClass('text-danger');
+        }
+
+        // Set modal content, display.
+        $('#error-message-content').html(error_message);
+        $('#error-message').modal('show');
+    }
 });
