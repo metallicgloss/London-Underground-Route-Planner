@@ -35,35 +35,26 @@ def station_search(request):
 
 
 def route_search(request):
-    if(planner.validate_route_parameters(
-            request.GET['origin_location'], request.GET['destination_location'], request.GET['start_time'])):
-        # Split time into segments.
-        start_time = request.GET['start_time'].split(":", 1)
+    # Split time into segments.
+    start_time = request.GET['start_time'].split(":", 1)
 
-        # Get route data.
-        route_data = planner.calculate_route(
-            request.GET['origin_location'],
-            request.GET['destination_location'],
-            (int(start_time[0]) * 60) + int(start_time[1])
-        )
+    # Get route data.
+    route_data = planner.calculate_route(
+        request.GET['origin_location'],
+        request.GET['destination_location'],
+        (int(start_time[0]) * 60) + int(start_time[1])
+    )
 
-        # Generate html formatted data.
-        html_data = HTMLFormatter(route_data).format_route()
+    # Generate html formatted data.
+    html_data = HTMLFormatter(route_data).format_route()
 
-        # Return formatted data to the frontend.
-        return JsonResponse(
-            {
-                'raw_data': route_data,
-                'route_table': html_data['route_table'],
-                'route_summary': html_data['route_summary'],
-                'route_travel_time': html_data['route_travel_time']
-            },
-            safe=True
-        )
-    else:
-        return JsonResponse(
-            {
-                'error': 'invalid'
-            },
-            safe=True
-        )
+    # Return formatted data to the frontend.
+    return JsonResponse(
+        {
+            'raw_data': route_data,
+            'route_table': html_data['route_table'],
+            'route_summary': html_data['route_summary'],
+            'route_travel_time': html_data['route_travel_time']
+        },
+        safe=True
+    )
