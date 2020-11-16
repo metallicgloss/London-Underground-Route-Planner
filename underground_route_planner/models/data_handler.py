@@ -39,10 +39,15 @@ class DataHandler:
         self._fetch_configuration_file()
 
         # Only initialise geocoding if set to true.
-        if(self._software_configuration['route_geocoding']):
-            self._geocode_handler = GeoCoding(
-                self._software_configuration['route_geocoding_api_key']
-            )
+        if(self._software_configuration['route_geocoding'] and self._software_configuration['route_geocoding_api_key'] != ""):
+            try:
+                # If error occurs initialising geocoding API
+                self._geocode_handler = GeoCoding(
+                    self._software_configuration['route_geocoding_api_key']
+                )
+            except:
+                # Force set geocoding to disable.
+                self._software_configuration['route_geocoding'] = False
         self._new_geocoded_data = False
 
     # ----------------------------------------------------------------------- #
