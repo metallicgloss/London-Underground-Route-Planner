@@ -90,16 +90,18 @@ class RoutePlanner:
             current_station_name = ""
 
             # The if condition is used to increase execution speed and memory efficiency
+                # Find stations where the shortest_time is not infinite (None)
             not_none_stations = list(
                 filter(
                     lambda x: self._route_calculator[x]["shortest_time"] is not None, remaining_stations
                 )
             )
-
+                # Sort list of stations by shortest time ascending order
             not_none_stations = sorted(
                 not_none_stations, key=lambda x: self._route_calculator[x]["shortest_time"]
             )
 
+                # If all stations have infinite shortest time, add stations to none_type_stations
             if not_none_stations == []:
                 none_type_stations = list(
                     filter(
@@ -107,24 +109,28 @@ class RoutePlanner:
                     )
                 )
 
+                # Order stations from shortest time to infinte time and get the first station (Station with shortest time)
                 current_station_name = (
                     not_none_stations + none_type_stations
                 )[0]
 
             else:
+                # Get the station with the shortest time
                 current_station_name = not_none_stations[0]
 
             # Freeing no longer needed memory
             del not_none_stations
 
             # Cycle Dijkstra Algorithm
+                # Get current station node and the station node's shortest time
             current_station = self._station_handler.get_station_node_by_name(
                 current_station_name
             )
             current_station_shortest_time = self._route_calculator[
                 current_station_name
             ]["shortest_time"]
-
+            
+                # Find time in minutes to get to station from previous station, would be None on first cycle 
             current_time_in_minutes = self._route_calculator[
                 current_station_name]["time_reached_station"]
 
@@ -159,6 +165,7 @@ class RoutePlanner:
                 else:
                     travel_time_between_stations = quickest_time + train_wait_time
 
+                # If shortest time is infinite or the current connectiono is a quicker route, update route_calculator dictionary
                 if (
                     (current_station_shortest_time is None or self._route_calculator[connected_station]["shortest_time"] is None)
                     or
