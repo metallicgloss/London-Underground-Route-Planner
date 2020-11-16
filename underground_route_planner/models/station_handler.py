@@ -92,12 +92,6 @@ class StationHandler:
                 }
                 self._connected_stations[station_name] = connected_station_information
 
-            # Add the station in the opposite direction
-            if bidirectional and self._station_name not in station_node.connected_stations:
-                station_node.add_station_connection(
-                    self, time_taken, train_line
-                )
-
         # ------------------------------------------------------------------- #
         #                    2.3 Get Station Connection                       #
         # ------------------------------------------------------------------- #

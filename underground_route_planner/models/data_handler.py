@@ -174,6 +174,13 @@ class DataHandler:
                         ),
                         route_data['route_line']
                     )
+                    destination.add_station_connection(
+                        origin,
+                        int(
+                            route_data['route_time']
+                        ),
+                        route_data['route_line']
+                    )
                 except Exception:
                     pass
 
