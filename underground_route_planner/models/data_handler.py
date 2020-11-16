@@ -197,7 +197,7 @@ class DataHandler:
     # Sanitise a specific route within the imported data.
     def _sanitise_route(self, origin_station: str, destination_station: str, route_time: float, previous_route_line: str, route_line: str, next_route_line: str):
         # If "Line" field is null and the underground line for the route above and below route is the same.
-        if (pd.isna(origin_station) and (previous_route_line == next_route_line)):
+        if (pd.isna(route_line) and (previous_route_line == next_route_line)):
             # Set the underground line of the route to match the same line of the route below.
             route_line = next_route_line
 
