@@ -52,8 +52,8 @@ def route_search(request):
 
     # Get route data.
     route_data = planner.calculate_route(
-        escape(request.GET['origin_location']),
-        escape(request.GET['destination_location']),
+        request.GET['origin_location'],
+        request.GET['destination_location'],
         (int(start_time[0]) * 60) + int(start_time[1])
     )
 
