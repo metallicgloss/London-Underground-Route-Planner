@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.apps import apps
+from django.utils.html import escape
 from underground_route_planner.models.html_formatter import HTMLFormatter
 
 # Initialise variable to access the configuration file of the project.
@@ -35,13 +36,24 @@ def station_search(request):
 
 
 def route_search(request):
+    for value in request.GET.items():
+        # Simple check to ensure parameter is string and within length limits.
+        if((not isinstance(value[0], str)) and (3 < len(value[0]) < 25)):
+            # Return invalid message
+            return JsonResponse(
+                {
+                    'response': 'invalid'
+                },
+                safe=True
+            )
+
     # Split time into segments.
-    start_time = request.GET['start_time'].split(":", 1)
+    start_time = escape(request.GET['start_time']).split(":", 1)
 
     # Get route data.
     route_data = planner.calculate_route(
-        request.GET['origin_location'],
-        request.GET['destination_location'],
+        escape(request.GET['origin_location']),
+        escape(request.GET['destination_location']),
         (int(start_time[0]) * 60) + int(start_time[1])
     )
 
