@@ -63,6 +63,10 @@ class DataHandler:
             "route_geocoding_api_key": "",
             "route_geocoded_data": {},
             "route_speed_factors": {},
+            "train_run_time": {
+                "start": 0,
+                "end": 24
+            }
         }
 
         with open(self._configuration_file_name, 'w') as configuration_data:
@@ -279,3 +283,7 @@ class DataHandler:
     @property
     def route_geocoding_status(self) -> bool:
         return self._software_configuration["route_geocoding"]
+    
+    @property
+    def train_run_times(self) -> dict:
+        return self._software_configuration["train_run_time"]
