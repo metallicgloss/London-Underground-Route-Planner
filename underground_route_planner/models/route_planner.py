@@ -59,12 +59,15 @@ class RoutePlanner:
         # Checks if the journey time should be altered to due changes made in the configuration
         def check_route_speed_factor_should_apply(current_time_in_minutes: int, train_line: str) -> bool:
             conditon_met = False
-            if train_line in self._route_speed_factors:
-                for time_intervals in self._route_speed_factors[train_line]["applied_times"]:
-                    start_time_in_minutes = time_intervals["start_time"] * 60
-                    end_time_in_minutes = time_intervals["end_time"] * 60
-                    if current_time_in_minutes >= start_time_in_minutes and current_time_in_minutes <= end_time_in_minutes:
-                        conditon_met = True
+            if(current_time_in_minutes is not None):
+                if train_line in self._route_speed_factors:
+                    for time_intervals in self._route_speed_factors[train_line]["applied_times"]:
+                        start_time_in_minutes = time_intervals["start_time"] * 60
+                        end_time_in_minutes = time_intervals["end_time"] * 60
+
+                        if current_time_in_minutes >= start_time_in_minutes and current_time_in_minutes <= end_time_in_minutes:
+                            conditon_met = True
+
             return conditon_met
 
         # Clear previously calculated route
@@ -126,6 +129,8 @@ class RoutePlanner:
 
             current_time_in_minutes = self._route_calculator[
                 current_station_name]["time_reached_station"]
+            print(self._route_calculator[
+                current_station_name]["time_reached_station"], current_station_name)
 
             # Cycle through all stations connected to current station
             for connected_station in current_station.connected_stations:

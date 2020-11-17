@@ -230,28 +230,16 @@ class RoutePlannerTester(TestCase):
             "South Kensington Underground Station"
         )
 
-        # Manually create connections
+        # Manually create connections in both directions.
         # Bank - Elphant - Ealing - Kensington (links back to Bank)
-        bank.add_station_connection(
-            elephant,
-            2,
-            "Bakerloo"
-        )
-        ealing.add_station_connection(
-            elephant,
-            2,
-            "Bakerloo"
-        )
-        ealing.add_station_connection(
-            kensington,
-            4,
-            "Bakerloo"
-        )
-        kensington.add_station_connection(
-            bank,
-            7,
-            "Circle"
-        )
+        bank.add_station_connection(elephant, 2, "Bakerloo")
+        elephant.add_station_connection(bank, 2, "Bakerloo")
+        ealing.add_station_connection(elephant, 2, "Bakerloo")
+        elephant.add_station_connection(ealing, 2, "Bakerloo")
+        ealing.add_station_connection(kensington, 4, "Bakerloo")
+        kensington.add_station_connection(ealing, 4, "Bakerloo")
+        kensington.add_station_connection(bank, 7, "Circle")
+        bank.add_station_connection(kensington, 7, "Circle")
 
         # Initialise Route Planner object.
         self.route_planner = RoutePlanner(
@@ -357,7 +345,7 @@ class RoutePlannerTester(TestCase):
         first_route = self.route_planner.calculate_route(
             "Bank Underground Station",
             "South Kensington Underground Station",
-            54
+            1020
         )
 
         # Calculate second route across multiple stations inside of speed up.
