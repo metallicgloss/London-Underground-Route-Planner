@@ -30,5 +30,6 @@ class UndergroundRoutePlannerConfig(AppConfig):
         self.route_planner = RoutePlanner(
             self.imported_data,
             self.data_handler.route_speed_factors,
-            self.data_handler.route_geocoding_status
+            self.data_handler.route_geocoding_status,
+            self.data_handler.train_run_times
         )

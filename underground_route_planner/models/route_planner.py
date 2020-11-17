@@ -24,11 +24,12 @@ class RoutePlanner:
     # ----------------------------------------------------------------------- #
 
     # Initialise the route planner object.
-    def __init__(self, station_handler: StationHandler, route_speed_factors: {}, route_geocoding: bool):
+    def __init__(self, station_handler: StationHandler, route_speed_factors: {}, route_geocoding: bool, train_run_times: dict):
         self._station_handler = station_handler
         self._route_speed_factors = route_speed_factors
         self._route_geocoding = route_geocoding
         self._route_calculator = {}
+        self._train_run_times = train_run_times
 
     # ----------------------------------------------------------------------- #
     #                        1.2 Initialise Calculator                        #
@@ -193,6 +194,7 @@ class RoutePlanner:
         route_locations = []
         next_station = self._route_calculator[destination_station_name]
         prev_train_line = ""
+        response_message = "valid"
 
         while next_station["current_station"] != starting_station_name:
             station_change = False
@@ -253,8 +255,20 @@ class RoutePlanner:
 
             # Set the next station on the route.
             next_station = self._route_calculator[next_station["from_station"]]
+        
+        # Check journey start and end time are within train running times
+        journey_start_time = self._route_calculator[route_in_order[0]["from"]]["time_reached_station"]
+        journey_end_time = self._route_calculator[route_in_order[-1]["to"]]["time_reached_station"]
+        trains_start_time = self._train_run_times["start"] * 60
+        trains_end_time = self._train_run_times["end"] * 60
+        if not (journey_start_time <= trains_end_time and journey_start_time >= trains_start_time \
+            and journey_end_time <= trains_end_time and journey_end_time >= trains_start_time):
+                response_message = "Journey time exceeds train running times"
 
+        print(response_message, journey_start_time <= trains_end_time and journey_start_time >= trains_start_time, journey_end_time <= trains_end_time and journey_end_time >= trains_start_time)
+        print(journey_start_time, journey_end_time, trains_start_time, trains_end_time)
         return {
+            "response_message": response_message,
             "route": route_in_order,
             "route_locations": route_locations[::-1]
         }
