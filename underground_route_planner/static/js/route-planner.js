@@ -71,6 +71,15 @@ $('#origin-location, #destination-location').typeahead({
     }
 });
 
+// Modify user interaction with page to provide a more clean experience.
+$("body").on("contextmenu", function (e) {
+    return false;
+});
+$("img").mousedown(function (e) {
+    e.preventDefault()
+});
+
+
 function time_set() {
     $('.at-title').removeClass('text-danger');
 }
@@ -83,8 +92,7 @@ $('#selection-submit-button').click(function () {
     if ([$('#origin-location').val(), $('#destination-location').val(), $('#start-time').val()].every(function (i) { return i !== ""; })) {
         // If existing search performed, reset.
         if (existingSearch == true) {
-            $("#route-table").empty();
-            $("#summary-block").empty();
+            $("#route-table, #summary-block").empty();
         }
 
         existingSearch = true;
@@ -99,407 +107,417 @@ $('#selection-submit-button').click(function () {
                 "start_time": $('#start-time').val()
             },
             success: function (response) {
-                // Export data to table, summary and total box.
-                $('#route-table').append(response['route_table'])
-                $('#summary-block').append(response['route_summary'])
-                $('#total-travel-time').html(response['route_travel_time'])
+                // Route confirmed as valid.
+                if (response['raw_data']['response_message'] == "") {
 
-                // Expand route box.
-                $('.selection-box').addClass('selection-box-large');
-                $('.route-selection').show();
+                    // Export data to table, summary and total box.
+                    $('#route-table').append(response['route_table'])
+                    $('#summary-block').append(response['route_summary'])
+                    $('#dijkstra').html(parseFloat(response['raw_data']['route_timings']['dijkstra']).toFixed(10))
+                    $('#structure').html(parseFloat(response['raw_data']['route_timings']['structure']).toFixed(10))
+                    $('#total-travel-time').html(response['route_travel_time'])
 
-                // Define locations.
-                locations = response['raw_data']['route_locations']
+                    // Expand route box.
+                    $('.selection-box').addClass('selection-box-large');
+                    $('.route-selection').show();
 
-                // If coordinates are empty, geocoding disabled.
-                if (locations.length != 0) {
-                    // Set map object to correct height based on number of stations in the route.
-                    $('#map-object').height(((Object.keys(response['raw_data']['route']).length - 1) * 42) + 100)
+                    // Define locations.
+                    locations = response['raw_data']['route_locations']
 
-                    // Create styled map with center in the middle of London
-                    const map = new google.maps.Map(document.getElementById("map-object"), {
-                        center: {
-                            lat: 51.5074,
-                            lng: -0.1278
-                        },
-                        zoom: 12,
-                        disableDefaultUI: true,
-                        // To adjust styles, please import json to https://mapstyle.withgoogle.com/
-                        styles: [
-                            {
-                                "elementType": "geometry",
-                                "stylers": [
-                                    {
-                                        "color": "#ffffff"
-                                    }
-                                ]
-                            },
-                            {
-                                "elementType": "labels.icon",
-                                "stylers": [
-                                    {
-                                        "visibility": "off"
-                                    }
-                                ]
-                            },
-                            {
-                                "elementType": "labels.text.fill",
-                                "stylers": [
-                                    {
-                                        "color": "#616161"
-                                    }
-                                ]
-                            },
-                            {
-                                "elementType": "labels.text.stroke",
-                                "stylers": [
-                                    {
-                                        "color": "#f5f5f5"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "administrative",
-                                "elementType": "labels.text.fill",
-                                "stylers": [
-                                    {
-                                        "color": "#0060a8"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "administrative",
-                                "elementType": "labels.text.stroke",
-                                "stylers": [
-                                    {
-                                        "visibility": "off"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "landscape",
-                                "elementType": "labels.text",
-                                "stylers": [
-                                    {
-                                        "color": "#0060a8"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "landscape",
-                                "elementType": "labels.text.fill",
-                                "stylers": [
-                                    {
-                                        "color": "#0060a8"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "landscape",
-                                "elementType": "labels.text.stroke",
-                                "stylers": [
-                                    {
-                                        "visibility": "off"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "landscape.natural.landcover",
-                                "elementType": "labels.text.fill",
-                                "stylers": [
-                                    {
-                                        "color": "#0060a8"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "landscape.natural.terrain",
-                                "elementType": "labels.text.fill",
-                                "stylers": [
-                                    {
-                                        "color": "#0060a8"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "landscape.natural.terrain",
-                                "elementType": "labels.text.stroke",
-                                "stylers": [
-                                    {
-                                        "visibility": "off"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "poi",
-                                "elementType": "geometry",
-                                "stylers": [
-                                    {
-                                        "color": "#eeeeee"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "poi",
-                                "elementType": "labels",
-                                "stylers": [
-                                    {
-                                        "color": "#0060a8"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "poi",
-                                "elementType": "labels.text",
-                                "stylers": [
-                                    {
-                                        "color": "#0060a8"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "poi",
-                                "elementType": "labels.text.fill",
-                                "stylers": [
-                                    {
-                                        "color": "#757575"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "poi",
-                                "elementType": "labels.text.stroke",
-                                "stylers": [
-                                    {
-                                        "visibility": "off"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "poi.park",
-                                "elementType": "geometry",
-                                "stylers": [
-                                    {
-                                        "color": "#e5e5e5"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "poi.park",
-                                "elementType": "geometry.fill",
-                                "stylers": [
-                                    {
-                                        "visibility": "off"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "poi.park",
-                                "elementType": "labels.text.fill",
-                                "stylers": [
-                                    {
-                                        "color": "#0060a8"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "road",
-                                "elementType": "geometry",
-                                "stylers": [
-                                    {
-                                        "color": "#ffffff"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "road",
-                                "elementType": "labels.text.stroke",
-                                "stylers": [
-                                    {
-                                        "visibility": "off"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "road.arterial",
-                                "elementType": "geometry.fill",
-                                "stylers": [
-                                    {
-                                        "color": "#dadada"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "road.arterial",
-                                "elementType": "labels",
-                                "stylers": [
-                                    {
-                                        "visibility": "off"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "road.arterial",
-                                "elementType": "labels.text.fill",
-                                "stylers": [
-                                    {
-                                        "color": "#757575"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "road.highway",
-                                "elementType": "geometry",
-                                "stylers": [
-                                    {
-                                        "color": "#ebebeb"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "road.highway",
-                                "elementType": "labels",
-                                "stylers": [
-                                    {
-                                        "visibility": "off"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "road.highway",
-                                "elementType": "labels.text.fill",
-                                "stylers": [
-                                    {
-                                        "color": "#616161"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "road.highway.controlled_access",
-                                "elementType": "geometry",
-                                "stylers": [
-                                    {
-                                        "color": "#dadada"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "road.local",
-                                "stylers": [
-                                    {
-                                        "visibility": "off"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "road.local",
-                                "elementType": "labels.text.fill",
-                                "stylers": [
-                                    {
-                                        "color": "#9e9e9e"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "transit",
-                                "elementType": "labels.text.stroke",
-                                "stylers": [
-                                    {
-                                        "visibility": "off"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "transit.line",
-                                "elementType": "geometry",
-                                "stylers": [
-                                    {
-                                        "color": "#e5e5e5"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "transit.station",
-                                "elementType": "geometry",
-                                "stylers": [
-                                    {
-                                        "color": "#eeeeee"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "water",
-                                "elementType": "geometry",
-                                "stylers": [
-                                    {
-                                        "color": "#dedede"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "water",
-                                "elementType": "labels.text",
-                                "stylers": [
-                                    {
-                                        "color": "#0060a8"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "water",
-                                "elementType": "labels.text.fill",
-                                "stylers": [
-                                    {
-                                        "color": "#9e9e9e"
-                                    }
-                                ]
-                            },
-                            {
-                                "featureType": "water",
-                                "elementType": "labels.text.stroke",
-                                "stylers": [
-                                    {
-                                        "visibility": "off"
-                                    }
-                                ]
-                            }
-                        ]
-                    });
+                    // If coordinates are empty, geocoding disabled.
+                    if (locations.length != 0) {
+                        // Set map object to correct height based on number of stations in the route.
+                        $('#map-object').height(((Object.keys(response['raw_data']['route']).length - 1) * 42) + 100)
 
-                    // Draw lines between each station with their corresponding tube line colour.
-                    // Not using Google direction service to have more control over the colours; also, direction service doesnt allow waypoints / stops when using train as transport.
-                    locations.forEach(function (value, i) {
-                        // If there is a next station (not at the end of the route)
-                        if (typeof locations[i + 1] !== 'undefined') {
-                            // Parse polygon shape using the current station and the next station.
-                            var selectedPolygon = [
-                                { lat: locations[i]['latitude'], lng: locations[i]['longitude'] },
-                                { lat: locations[i + 1]['latitude'], lng: locations[i + 1]['longitude'] },
+                        // Create styled map with center in the middle of London
+                        const map = new google.maps.Map(document.getElementById("map-object"), {
+                            center: {
+                                lat: 51.5074,
+                                lng: -0.1278
+                            },
+                            zoom: 12,
+                            disableDefaultUI: true,
+                            // To adjust styles, please import json to https://mapstyle.withgoogle.com/
+                            styles: [
+                                {
+                                    "elementType": "geometry",
+                                    "stylers": [
+                                        {
+                                            "color": "#ffffff"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "elementType": "labels.icon",
+                                    "stylers": [
+                                        {
+                                            "visibility": "off"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "elementType": "labels.text.fill",
+                                    "stylers": [
+                                        {
+                                            "color": "#616161"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "elementType": "labels.text.stroke",
+                                    "stylers": [
+                                        {
+                                            "color": "#f5f5f5"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "administrative",
+                                    "elementType": "labels.text.fill",
+                                    "stylers": [
+                                        {
+                                            "color": "#0060a8"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "administrative",
+                                    "elementType": "labels.text.stroke",
+                                    "stylers": [
+                                        {
+                                            "visibility": "off"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "landscape",
+                                    "elementType": "labels.text",
+                                    "stylers": [
+                                        {
+                                            "color": "#0060a8"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "landscape",
+                                    "elementType": "labels.text.fill",
+                                    "stylers": [
+                                        {
+                                            "color": "#0060a8"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "landscape",
+                                    "elementType": "labels.text.stroke",
+                                    "stylers": [
+                                        {
+                                            "visibility": "off"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "landscape.natural.landcover",
+                                    "elementType": "labels.text.fill",
+                                    "stylers": [
+                                        {
+                                            "color": "#0060a8"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "landscape.natural.terrain",
+                                    "elementType": "labels.text.fill",
+                                    "stylers": [
+                                        {
+                                            "color": "#0060a8"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "landscape.natural.terrain",
+                                    "elementType": "labels.text.stroke",
+                                    "stylers": [
+                                        {
+                                            "visibility": "off"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "poi",
+                                    "elementType": "geometry",
+                                    "stylers": [
+                                        {
+                                            "color": "#eeeeee"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "poi",
+                                    "elementType": "labels",
+                                    "stylers": [
+                                        {
+                                            "color": "#0060a8"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "poi",
+                                    "elementType": "labels.text",
+                                    "stylers": [
+                                        {
+                                            "color": "#0060a8"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "poi",
+                                    "elementType": "labels.text.fill",
+                                    "stylers": [
+                                        {
+                                            "color": "#757575"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "poi",
+                                    "elementType": "labels.text.stroke",
+                                    "stylers": [
+                                        {
+                                            "visibility": "off"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "poi.park",
+                                    "elementType": "geometry",
+                                    "stylers": [
+                                        {
+                                            "color": "#e5e5e5"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "poi.park",
+                                    "elementType": "geometry.fill",
+                                    "stylers": [
+                                        {
+                                            "visibility": "off"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "poi.park",
+                                    "elementType": "labels.text.fill",
+                                    "stylers": [
+                                        {
+                                            "color": "#0060a8"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "road",
+                                    "elementType": "geometry",
+                                    "stylers": [
+                                        {
+                                            "color": "#ffffff"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "road",
+                                    "elementType": "labels.text.stroke",
+                                    "stylers": [
+                                        {
+                                            "visibility": "off"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "road.arterial",
+                                    "elementType": "geometry.fill",
+                                    "stylers": [
+                                        {
+                                            "color": "#dadada"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "road.arterial",
+                                    "elementType": "labels",
+                                    "stylers": [
+                                        {
+                                            "visibility": "off"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "road.arterial",
+                                    "elementType": "labels.text.fill",
+                                    "stylers": [
+                                        {
+                                            "color": "#757575"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "road.highway",
+                                    "elementType": "geometry",
+                                    "stylers": [
+                                        {
+                                            "color": "#ebebeb"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "road.highway",
+                                    "elementType": "labels",
+                                    "stylers": [
+                                        {
+                                            "visibility": "off"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "road.highway",
+                                    "elementType": "labels.text.fill",
+                                    "stylers": [
+                                        {
+                                            "color": "#616161"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "road.highway.controlled_access",
+                                    "elementType": "geometry",
+                                    "stylers": [
+                                        {
+                                            "color": "#dadada"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "road.local",
+                                    "stylers": [
+                                        {
+                                            "visibility": "off"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "road.local",
+                                    "elementType": "labels.text.fill",
+                                    "stylers": [
+                                        {
+                                            "color": "#9e9e9e"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "transit",
+                                    "elementType": "labels.text.stroke",
+                                    "stylers": [
+                                        {
+                                            "visibility": "off"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "transit.line",
+                                    "elementType": "geometry",
+                                    "stylers": [
+                                        {
+                                            "color": "#e5e5e5"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "transit.station",
+                                    "elementType": "geometry",
+                                    "stylers": [
+                                        {
+                                            "color": "#eeeeee"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "water",
+                                    "elementType": "geometry",
+                                    "stylers": [
+                                        {
+                                            "color": "#dedede"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "water",
+                                    "elementType": "labels.text",
+                                    "stylers": [
+                                        {
+                                            "color": "#0060a8"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "water",
+                                    "elementType": "labels.text.fill",
+                                    "stylers": [
+                                        {
+                                            "color": "#9e9e9e"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "featureType": "water",
+                                    "elementType": "labels.text.stroke",
+                                    "stylers": [
+                                        {
+                                            "visibility": "off"
+                                        }
+                                    ]
+                                }
                             ]
+                        });
 
-                            // Create a new polyline with the data.
-                            const selectedJourney = new google.maps.Polyline({
-                                path: selectedPolygon,
-                                geodesic: true,
-                                strokeColor: getComputedStyle(document.documentElement).getPropertyValue(locations[i]['css_color_variable']),
-                                strokeOpacity: 1.0,
-                                strokeWeight: 4,
-                                map: map
-                            });
-                        }
-                    });
-                }
-                else {
-                    $('#map-object').html("<div style='text-align:center'><span class='text-warning'><b>Geolocation Map Disabled By Administrator</b></span><p>The geocoding facility of this application has been disabled by the website administrator. We're sorry for any inconvenience caused. <br><br>To enable geolocation, please enable route_geocoding in the configuration file; if you're not the admin, please contact support.</p></div>")
+                        // Draw lines between each station with their corresponding tube line colour.
+                        // Not using Google direction service to have more control over the colours; also, direction service doesnt allow waypoints / stops when using train as transport.
+                        locations.forEach(function (value, i) {
+                            // If there is a next station (not at the end of the route)
+                            if (typeof locations[i + 1] !== 'undefined') {
+                                // Parse polygon shape using the current station and the next station.
+                                var selectedPolygon = [
+                                    { lat: locations[i]['latitude'], lng: locations[i]['longitude'] },
+                                    { lat: locations[i + 1]['latitude'], lng: locations[i + 1]['longitude'] },
+                                ]
+
+                                // Create a new polyline with the data.
+                                const selectedJourney = new google.maps.Polyline({
+                                    path: selectedPolygon,
+                                    geodesic: true,
+                                    strokeColor: getComputedStyle(document.documentElement).getPropertyValue(locations[i]['css_color_variable']),
+                                    strokeOpacity: 1.0,
+                                    strokeWeight: 4,
+                                    map: map
+                                });
+                            }
+                        });
+                    }
+                    else {
+                        $('#map-object').html("<div style='text-align:center'><span class='text-warning'><b>Geolocation Map Disabled By Administrator</b></span><p>The geocoding facility of this application has been disabled by the website administrator. We're sorry for any inconvenience caused. <br><br>To enable geolocation, please enable route_geocoding in the configuration file; if you're not the admin, please contact support.</p></div>")
+                    }
+                } else {
+                    // Route invalid.
+                    // Display error popup to user.
+                    $('#error-message-content').html("Sorry! We couldn't calculate your route.<br><br>Your requested journey would have taken " + response['route_travel_time'] + " minutes; please ensure that your entire journey can be completed during opening hours.");
+                    $('#error-message').modal('show');
+                    $('.at-title').addClass('text-danger');
                 }
             },
             error: function (xhr) {
-                console.log(xhr)
+                $('#error-message-content').html("Sorry! We've run into an undefined error. Please report the following to a system administrator. <br><br>" + xhr);
+                $('#error-message').modal('show');
             }
         });
-
-        // Clear input boxes to allow for immediate new route.
-        $("#origin-location, #destination-location, #start-time").val('');
     } else {
         // One field failed to be entered.
         error_message = ""

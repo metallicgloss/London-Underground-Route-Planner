@@ -1,3 +1,4 @@
+import time
 from math import ceil
 from .station_handler import StationHandler
 
@@ -24,7 +25,7 @@ class RoutePlanner:
     # ----------------------------------------------------------------------- #
 
     # Initialise the route planner object.
-    def __init__(self, station_handler: StationHandler, route_speed_factors: {}, route_geocoding: bool, train_run_times: dict):
+    def __init__(self, station_handler: StationHandler, route_speed_factors: {}, route_geocoding: bool, train_run_times: {}):
         self._station_handler = station_handler
         self._route_speed_factors = route_speed_factors
         self._route_geocoding = route_geocoding
@@ -57,15 +58,21 @@ class RoutePlanner:
 
     # Calculate the quickest route from the starting station to the next station.
     def calculate_route(self, starting_station_name: str, destination_station_name: str, journey_start_time_24h_minutes: int) -> list:
+        # Set start time for route calculation
+        calculation_start_time = time.time()
+
         # Checks if the journey time should be altered to due changes made in the configuration
         def check_route_speed_factor_should_apply(current_time_in_minutes: int, train_line: str) -> bool:
             conditon_met = False
-            if train_line in self._route_speed_factors:
-                for time_intervals in self._route_speed_factors[train_line]["applied_times"]:
-                    start_time_in_minutes = time_intervals["start_time"] * 60
-                    end_time_in_minutes = time_intervals["end_time"] * 60
-                    if current_time_in_minutes >= start_time_in_minutes and current_time_in_minutes <= end_time_in_minutes:
-                        conditon_met = True
+            if(current_time_in_minutes is not None):
+                if train_line in self._route_speed_factors:
+                    for time_intervals in self._route_speed_factors[train_line]["applied_times"]:
+                        start_time_in_minutes = time_intervals["start_time"] * 60
+                        end_time_in_minutes = time_intervals["end_time"] * 60
+
+                        if current_time_in_minutes >= start_time_in_minutes and current_time_in_minutes <= end_time_in_minutes:
+                            conditon_met = True
+
             return conditon_met
 
         # Clear previously calculated route
@@ -177,19 +184,25 @@ class RoutePlanner:
             # Remove current station from remaining stations
             remaining_stations.remove(current_station_name)
 
-        return self._generate_route_structure(starting_station_name, destination_station_name)
+        # Set end time for route calculation
+        calculation_end_time = time.time()
+
+        return self._generate_route_structure(starting_station_name, destination_station_name, calculation_end_time - calculation_start_time)
 
     # ----------------------------------------------------------------------- #
     #                        1.4 Generate Route Structure                     #
     # ----------------------------------------------------------------------- #
 
     # Returns the route stored in route_calculator as a list of objects to be used by the front end
-    def _generate_route_structure(self, starting_station_name: str, destination_station_name: str) -> list:
+    def _generate_route_structure(self, starting_station_name: str, destination_station_name: str, calculation_time: int) -> list:
         route = []
         route_locations = []
         next_station = self._route_calculator[destination_station_name]
         prev_train_line = ""
-        response_message = "valid"
+        response_message = ""
+
+        # Set start time for route formatting
+        structure_creation_start_time = time.time()
 
         while next_station["current_station"] != starting_station_name:
             station_change = False
@@ -250,22 +263,30 @@ class RoutePlanner:
 
             # Set the next station on the route.
             next_station = self._route_calculator[next_station["from_station"]]
-        
+
+        # Set end time for route formatting
+        structure_creation_end_time = time.time()
+
         # Check journey start and end time are within train running times
-        journey_start_time = self._route_calculator[route_in_order[0]["from"]]["time_reached_station"]
-        journey_end_time = self._route_calculator[route_in_order[-1]["to"]]["time_reached_station"]
+        journey_start_time = self._route_calculator[route_in_order[0]
+                                                    ["from"]]["time_reached_station"]
+        journey_end_time = self._route_calculator[route_in_order[-1]
+                                                  ["to"]]["time_reached_station"]
         trains_start_time = self._train_run_times["start"] * 60
         trains_end_time = self._train_run_times["end"] * 60
-        if not (journey_start_time <= trains_end_time and journey_start_time >= trains_start_time \
-            and journey_end_time <= trains_end_time and journey_end_time >= trains_start_time):
-                response_message = "Journey time exceeds train running times"
 
-        print(response_message, journey_start_time <= trains_end_time and journey_start_time >= trains_start_time, journey_end_time <= trains_end_time and journey_end_time >= trains_start_time)
-        print(journey_start_time, journey_end_time, trains_start_time, trains_end_time)
+        if not (journey_start_time <= trains_end_time and journey_start_time >= trains_start_time
+                and journey_end_time <= trains_end_time and journey_end_time >= trains_start_time):
+            response_message = "invalid_time"
+
         return {
             "response_message": response_message,
             "route": route_in_order,
-            "route_locations": route_locations[::-1]
+            "route_locations": route_locations[::-1],
+            "route_timings": {
+                "dijkstra": calculation_time,
+                "structure": structure_creation_end_time - structure_creation_start_time,
+            }
         }
 
     # ----------------------------------------------------------------------- #

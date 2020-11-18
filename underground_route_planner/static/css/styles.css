@@ -24,25 +24,15 @@
     --waterloo-line: #93CEBA;
 }
 
-@font-face {
-    font-family: 'GT Haptik';
-    font-style: normal;
-    font-weight: normal;
-    src: url('/static/fonts/GT_Haptik_Regular.ttf') format("truetype");
-}
-
-@font-face {
-    font-family: 'GT Haptik';
-    font-style: normal;
-    font-weight: bold;
-    src: url('/static/fonts/GT_Haptik_Bold.ttf') format("truetype");
-}
-
 body {
-    font-family: 'GT Haptik';
+    font-family: 'Raleway', sans-serif;
     max-width: 100%;
     min-height: 100%;
     overflow-x: hidden;
+}
+
+footer {
+    margin-top: 100px;
 }
 
 @media (min-width: 1800px) {
@@ -65,8 +55,7 @@ body {
 .navbar-custom .navbar-brand {
     color: var(--primary-black);
     font-size: 36px;
-    font-style: normal;
-    font-weight: 750;
+    font-weight: 800;
     line-height: 45px;
     margin-left: -25px;
 }
@@ -81,14 +70,18 @@ body {
 
 .navbar-custom .navbar-nav .nav-item {
     margin-left: 25px;
+    margin-top: 5px;
 }
 
 .navbar-custom .navbar-nav .nav-item .nav-link {
     color: var(--primary-black);
-    font-size: 14px;
-    font-style: normal;
-    font-weight: normal;
+    font-size: 15px;
+    font-weight: 600;
     line-height: 18px;
+}
+
+.navbar-custom .navbar-nav .nav-item .nav-link:hover {
+    color: var(--secondary-black);
 }
 
 /* 
@@ -114,23 +107,20 @@ body {
 
 .header-block .header-block-content .header-block-heading {
     font-size: 40px;
-    font-style: normal;
-    font-weight: normal;
+    font-weight: 700;
     line-height: 50px;
 }
 
 .header-block .header-block-content .header-block-subheading, .header-block .header-block-content .subpage-block-subheading {
     font-size: 20px;
-    font-style: normal;
-    font-weight: normal;
+    font-weight: 500;
     line-height: 25px;
 }
 
 .header-block .header-block-content .subpage-block-heading {
     padding-top: 60px;
     font-size: 40px;
-    font-style: normal;
-    font-weight: normal;
+    font-weight: 500;
     line-height: 50px;
 }
 
@@ -172,9 +162,8 @@ body {
 
 .homepage-selection .selection-box .selection-title {
     color: var(--secondary-black);
-    font-size: 16px;
-    font-style: normal;
-    font-weight: normal;
+    font-size: 17px;
+    font-weight: 500;
     line-height: 20px;
     margin-bottom: 0;
 }
@@ -183,9 +172,8 @@ body {
     border: none;
     outline: none;
     color: var(--primary-black);
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 750;
+    font-size: 17px;
+    font-weight: 700;
     line-height: 20px;
 }
 
@@ -207,14 +195,14 @@ body {
     border-radius: 10px;
     border: 0;
     color: #fff;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 750;
+    font-size: 17px;
+    font-weight: 600;
     height: 54px;
     line-height: 20px;
     margin-top: -5px;
     outline: none;
     width: 116px;
+    transition: all 0.06s ease-in-out;
 }
 
 .homepage-selection .selection-button #selection-submit-button:hover {
@@ -244,7 +232,7 @@ body {
 
 .tt-menu .no-results-found {
     color: #DC241F;
-    font-weight: bold;
+    font-weight: 700;
 }
 
 .tt-menu .empty-message {
@@ -266,6 +254,12 @@ body {
 
 .selection-box .twitter-typeahead {
     width: 100%;
+}
+
+.modal-content {
+    border: 0;
+    border-radius: 20px;
+    padding: 20px 20px 0px 20px;
 }
 
 /* 
@@ -297,18 +291,16 @@ body {
     border-top: none;
     border-bottom: none;
     color: var(--secondary-black);
-    font-size: 16px;
-    font-style: normal;
-    font-weight: normal;
+    font-size: 17px;
+    font-weight: 500;
     line-height: 20px;
     padding: 0px 0px 20px 0px;
 }
 
 .route-selection .route-plan td {
     border-top: none;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: normal;
+    font-size: 17px;
+    font-weight: 500;
     line-height: 20px;
     padding: 0px 0px 20px 0px;
 }
@@ -340,9 +332,8 @@ body {
     position: relative;
     top: 20px;
     padding: 0 15px 0 0;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 16px;
+    font-weight: 500;
+    font-size: 17px;
     line-height: 20px;
     color: var(--secondary-black);
     background: #fff;
@@ -359,6 +350,16 @@ body {
     margin-bottom: 10px;
 }
 
+.algorithm-timings {
+    margin-top: 10px;
+}
+
+.algorithm-timings p {
+    margin-bottom: 0;
+    color: var(--secondary-black);
+    font-size: 13px;
+}
+
 /* 
 -----------------------------------------------------
 -------------    Homepage Content       -------------
@@ -372,6 +373,7 @@ body {
 
 #text-overlay-upper {
     position: absolute;
+    font-weight: 600;
     margin-top: 185px;
     margin-left: 25px;
 }
@@ -382,6 +384,7 @@ body {
 
 #text-overlay-lower {
     z-index: 100;
+    font-weight: 600;
     position: absolute;
     margin-left: 35px;
 }
