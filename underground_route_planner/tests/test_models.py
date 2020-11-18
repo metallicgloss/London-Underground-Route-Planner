@@ -259,7 +259,11 @@ class RoutePlannerTester(TestCase):
                     "factor": 0.5
                 },
             },
-            False
+            False,
+            {
+                "start": 5,
+                "end": 24
+            }
         )
 
         pass

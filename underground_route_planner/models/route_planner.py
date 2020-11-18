@@ -25,7 +25,7 @@ class RoutePlanner:
     # ----------------------------------------------------------------------- #
 
     # Initialise the route planner object.
-    def __init__(self, station_handler: StationHandler, route_speed_factors: {}, route_geocoding: bool, train_run_times: dict):
+    def __init__(self, station_handler: StationHandler, route_speed_factors: {}, route_geocoding: bool, train_run_times: {}):
         self._station_handler = station_handler
         self._route_speed_factors = route_speed_factors
         self._route_geocoding = route_geocoding
@@ -134,8 +134,6 @@ class RoutePlanner:
 
             current_time_in_minutes = self._route_calculator[
                 current_station_name]["time_reached_station"]
-            print(self._route_calculator[
-                current_station_name]["time_reached_station"], current_station_name)
 
             # Cycle through all stations connected to current station
             for connected_station in current_station.connected_stations:
