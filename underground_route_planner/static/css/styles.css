@@ -350,6 +350,16 @@ footer {
     margin-bottom: 10px;
 }
 
+.algorithm-timings {
+    margin-top: 10px;
+}
+
+.algorithm-timings p {
+    margin-bottom: 0;
+    color: var(--secondary-black);
+    font-size: 13px;
+}
+
 /* 
 -----------------------------------------------------
 -------------    Homepage Content       -------------
