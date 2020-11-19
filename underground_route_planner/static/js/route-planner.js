@@ -132,8 +132,8 @@ $('#selection-submit-button').click(function () {
                         // Create styled map with center in the middle of London
                         const map = new google.maps.Map(document.getElementById("map-object"), {
                             center: {
-                                lat: 51.5074,
-                                lng: -0.1278
+                                lat: response['raw_data']['route_locations'][0]['latitude'],
+                                lng: response['raw_data']['route_locations'][0]['longitude']
                             },
                             zoom: 12,
                             disableDefaultUI: true,

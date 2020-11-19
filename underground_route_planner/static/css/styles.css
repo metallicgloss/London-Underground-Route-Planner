@@ -209,6 +209,12 @@ footer {
     background: var(--secondary-blue);
 }
 
+.homepage-selection .selection-box .search-train-graphic-box {
+    overflow: hidden;
+    margin-top: -25px;
+    padding-top: 28px;
+}
+
 /* 
 -------------------------------------------------
 -------------    Typeahead Styles   -------------
