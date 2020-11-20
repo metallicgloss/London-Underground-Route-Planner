@@ -81,7 +81,15 @@ class RoutePlanner:
         remaining_stations = self._station_handler.get_all_station_names()
 
         # Move the starting station to the front of the list
-        remaining_stations.remove(starting_station_name)
+        try:
+            # If error occurs when attempting to remove the starting station, invalid station name passed
+            # Likely manual request or bypassing attempt of frontend validation.
+            remaining_stations.remove(starting_station_name)
+        except:
+            return {
+                "response": "Invalid Start Station"
+            }
+
         remaining_stations.insert(0, starting_station_name)
 
         # Set starting point time to 0
@@ -187,7 +195,14 @@ class RoutePlanner:
         # Set end time for route calculation
         calculation_end_time = time.time()
 
-        return self._generate_route_structure(starting_station_name, destination_station_name, calculation_end_time - calculation_start_time)
+        try:
+            # If error occurs when generating route structure, most common problem caused by invalid destination station name.
+            # Likely manual request or bypassing attempt of frontend validation.
+            return self._generate_route_structure(starting_station_name, destination_station_name, calculation_end_time - calculation_start_time)
+        except:
+            return {
+                "response": "Invalid Route Request"
+            }
 
     # ----------------------------------------------------------------------- #
     #                        1.4 Generate Route Structure                     #
