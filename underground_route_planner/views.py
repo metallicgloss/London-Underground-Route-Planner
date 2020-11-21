@@ -49,7 +49,7 @@ def route_search(request):
     for value in request.GET.items():
         # If time input, check formatting.
         if(value[0] == "start_time"):
-            if(not re.search("^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$", value[1])):
+            if(not re.search("^([0-1]?[0-9]|2[0-3]):[0-5][0,5]$", value[1])):
                 # Return invalid message
                 return JsonResponse(
                     {
