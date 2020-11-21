@@ -59,7 +59,7 @@ def route_search(request):
                 )
 
         # Simple check to ensure parameter is string and within length limits.
-        if((not isinstance(value[1], str)) or (3 > len(value[1])) or (25 < len(value[1])) or (value[1] is None) or (value[1] == "")):
+        if((not isinstance(value[1], str)) or (3 >= len(value[1])) or (27 <= len(value[1])) or (value[1] is None) or (value[1] == "")):
             # Return invalid message
             return JsonResponse(
                 {
