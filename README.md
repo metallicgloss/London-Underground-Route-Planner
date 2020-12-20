@@ -39,6 +39,8 @@ PIP 20.1.1
     1. Execute `python manage.py runserver` to start the Django process.
 1. Launch your preferred browser and navigate to http://localhost:8000 to view the site.
 
+Looking for more details on the software? Please review **Software Documentation - Project Submission.pdf** for extra information, in addition to configuration file assistance.
+
 ### Pre-Configured Installation / Real World Example
 ### Installation Location
 London, United Kingdom (~1ms Latency from University of Greenwich campus)
