@@ -1,6 +1,6 @@
 # London Underground Route Planner
 
-[![Build Status](https://travis-ci.com/metallicgloss/COMP1828-Coursework.svg?token=qhe4xK4Y5TeknywzyUwA&branch=main)](https://travis-ci.com/metallicgloss/COMP1828-Coursework)
+[![Build Status](https://travis-ci.com/metallicgloss/London-Underground-Route-Planner.svg?branch=main)](https://travis-ci.com/metallicgloss/London-Underground-Route-Planner)
 
 Please note, this script is **NOT** production ready; the data provided is for demonstration purposes only and doesn't depict real world underground train timings. This software and project is in no way affiliated with Transport for London.  
 
